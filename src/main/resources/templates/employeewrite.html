@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>직원 등록폼</title>
+</head>
+<style>
+    .layout {
+        width: 500px;
+        margin: 0 auto;
+        margin-top: 40px;
+    }
+
+    .layout input, textarea {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 10px;
+    }
+</style>
+<body>
+    <div class="layout">
+        <form action="/employee/writepro" method="post">
+            <input name="emname" type="text">
+            <input name="classify" type="text">
+            <input name="joindate" type="text">
+            <button type="submit">등록</button>
+        </form>
+    </div>
+</body>
+</html>
