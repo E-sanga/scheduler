@@ -1,7 +1,7 @@
 package com.scheduler.scheduler.service;
 
 import com.scheduler.scheduler.entity.Employee;
-import com.scheduler.scheduler.repository.EmployeeRopository;
+import com.scheduler.scheduler.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,21 +11,38 @@ import java.util.List;
 public class EmployeeService {
 
     @Autowired
-    private EmployeeRopository employeeRopository;
+    private EmployeeRepository employeeRepository;
 
     public void write(Employee employee) {
 
-        employeeRopository.save(employee);
+        employeeRepository.save(employee);
 
     }
 
     public List<Employee> employeeList() {
 
-        return employeeRopository.findAll();
+        return employeeRepository.findAll();
     }
 
     public void delete(Integer employee_id) {
 
-        employeeRopository.deleteById(employee_id);
+        employeeRepository.deleteById(employee_id);
+    }
+
+    public Employee view(Integer employee_id) {
+        Employee employee = employeeRepository.findById(employee_id).get();
+        return employee;
+    }
+
+    public void update(Employee employee) {
+        Employee existingEmployee = employeeRepository.findById(employee.getEmployee_id()).orElse(null);
+        if (existingEmployee != null) {
+            existingEmployee.setEmname(employee.getEmname());
+            existingEmployee.setClassify(employee.getClassify());
+            existingEmployee.setJoin_date(employee.getJoin_date());
+            // 필요한 다른 필드들도 동일하게 설정
+            employeeRepository.save(existingEmployee);
+        }
+
     }
 }

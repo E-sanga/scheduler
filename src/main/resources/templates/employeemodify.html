@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>직원 수정폼</title>
+</head>
+<style>
+    .layout {
+        width: 500px;
+        margin: 0 auto;
+        margin-top: 40px;
+    }
+
+    .layout input, textarea {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 10px;
+    }
+</style>
+<body>
+<div class="layout">
+    <form th:action="@{/employee/update/{employee_id}(employee_id = ${employee.employee_id})}" method="post">
+        <input name="emname" type="text" th:value="${employee.emname}">
+        <input name="classify" type="text" th:value="${employee.classify}">
+        <input name="joindate" type="text" th:value="${#dates.format(employee.join_date, 'yyyy-MM-dd')}">
+        <button type="submit">수정</button>
+    </form>
+</div>
+</body>
+</html>

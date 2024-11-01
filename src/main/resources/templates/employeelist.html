@@ -16,6 +16,7 @@
                 <input type="hidden" th:value="${employee.employee_id}" name="employee_id" />
                 <button type="submit">삭제</button>
             </form>
+            <a th:href="@{/employee/modify/{employee_id}(employee_id = ${employee.employee_id})}">수정</a>
         </div>
     </div>
 </body>
