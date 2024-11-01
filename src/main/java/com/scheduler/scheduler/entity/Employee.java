@@ -1,13 +1,8 @@
 package com.scheduler.scheduler.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -23,5 +18,15 @@ public class Employee {
     private String classify;
 
     private Date join_date;
+
+    // 휴무일을 가져오기 위한 처리
+    @OneToOne
+    @JoinColumn(name = "schedule_id") // Schedule의 외래 키를 참조
+    private Schedule schedule;
+
+    // Schedule의 closedDay를 가져오는 getter
+    public Date getClosedDay() {
+        return schedule != null ? schedule.getClosedDay() : null;
+    }
 
 }

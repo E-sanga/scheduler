@@ -1,10 +1,10 @@
 package com.scheduler.scheduler.controller;
 
 import com.scheduler.scheduler.entity.Employee;
-import com.scheduler.scheduler.repository.EmployeeRopository;
 import com.scheduler.scheduler.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -38,7 +38,22 @@ public class EmployeeController {
         System.out.println(employee.getJoin_date());
         employeeService.write(employee);
 
-        return "";
+        return "redirect:/employee/list";
     }
 
+    @GetMapping("/employee/list")
+    public String employeeList(Model model) {
+
+        model.addAttribute("list", employeeService.employeeList());
+        // System.out.println(model);
+
+        return "employeelist";
+    }
+
+    @PostMapping("/employee/delete")
+    public String employeeDelete(Integer employee_id) {
+
+        employeeService.delete(employee_id);
+        return "redirect:/employee/list";
+    }
 }

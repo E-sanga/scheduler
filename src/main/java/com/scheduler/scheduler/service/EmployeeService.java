@@ -5,6 +5,8 @@ import com.scheduler.scheduler.repository.EmployeeRopository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmployeeService {
 
@@ -15,5 +17,15 @@ public class EmployeeService {
 
         employeeRopository.save(employee);
 
+    }
+
+    public List<Employee> employeeList() {
+
+        return employeeRopository.findAll();
+    }
+
+    public void delete(Integer employee_id) {
+
+        employeeRopository.deleteById(employee_id);
     }
 }

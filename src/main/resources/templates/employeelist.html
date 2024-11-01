@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>직원 목록</title>
+</head>
+<body>
+    <div>
+      <p>전체 직원</p>
+        <div th:each="employee : ${list}">
+            <p th:text="${employee.emname}"></p>
+            <p th:text="${employee.classify}"></p>
+            <p th:text="${#dates.format(employee.join_date, 'yyyy-MM-dd')}"></p>
+            <p th:text="${employee.schedule != null ? #dates.format(employee.schedule, 'yyyy-MM-dd') : '없음'}">
+            <form th:action="@{/employee/delete}" method="post">
+                <input type="hidden" th:value="${employee.employee_id}" name="employee_id" />
+                <button type="submit">삭제</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
