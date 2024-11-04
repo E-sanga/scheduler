@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팀 목록</title>
+</head>
+<body>
+    <div>
+      <p>전체 직원</p>
+        <a href="write">신규 팀 등록</a>
+        <div th:each="team : ${list}">
+            <p th:text="${team.teamName}"></p>
+        </div>
+    </div>
+</body>
+</html>

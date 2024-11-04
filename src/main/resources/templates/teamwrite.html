@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팀 생성</title>
+</head>
+<body>
+    <h3>팀 등록</h3>
+
+        <form action="/team/writepro" method="post">
+            <input type="text" name="teamName">
+            <select id="leader" name="leader">
+                <option value="" disabled selected>팀장 선택</option>
+                <option th:each="employee : ${elist}"
+                        th:value="|${employee.emname}| + '|' + |${employee.employee_id}|"
+                        th:text="${employee.emname}"></option>
+            </select>
+            <button type="submit">등록</button>
+        </form>
+</body>
+</html>

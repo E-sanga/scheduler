@@ -7,6 +7,7 @@
 <body>
     <div>
       <p>전체 직원</p>
+        <a href="write">신규 직원 등록</a>
         <div th:each="employee : ${list}">
             <p th:text="${employee.emname}"></p>
             <p th:text="${employee.classify}"></p>
