@@ -15,6 +15,12 @@
                         th:value="|${employee.emname}| + '|' + |${employee.employee_id}|"
                         th:text="${employee.emname}"></option>
             </select>
+            <select id="member" name="member">
+                <option value="" disabled selected>팀원 선택</option>
+                <option th:each="employee : ${elist}"
+                        th:value="|${employee.emname}| + '|' + |${employee.employee_id}|"
+                        th:text="${employee.emname}"></option>
+            </select>
             <button type="submit">등록</button>
         </form>
 </body>
