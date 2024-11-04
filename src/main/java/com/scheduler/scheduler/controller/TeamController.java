@@ -70,7 +70,6 @@ public class TeamController {
                 String[] parts = member.split("\\|");
                 String selectedEmname = parts[0];
                 Integer selectedEmployeeId = Integer.valueOf(parts[1]);
-                // 테스트용
                 // 초기화 해줌
                 TeamMember teamMember = new TeamMember();
                 teamMember.setTeam_id(teamService.view(teamName).getTeam_id());
