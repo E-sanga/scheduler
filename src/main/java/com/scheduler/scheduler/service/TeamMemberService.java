@@ -25,4 +25,5 @@ public class TeamMemberService {
         List<TeamMember> members = teamMemberRepository.findByEmployeeId(employeeId);
         return members.isEmpty() ? null : members.get(0);
     }
+
 }

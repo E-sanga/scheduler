@@ -46,7 +46,7 @@ public class TeamController {
     }
 
     @PostMapping("/team/writepro")
-    public String teamWritePro(Team team, @RequestParam String leader, @RequestParam String member) {
+    public String teamWritePro(Team team, @RequestParam String leader, @RequestParam String[] members) {
         teamService.write(team);
         String teamName = team.getTeamName();
         // 방금 생성된 팀명으로 팀번호 가져오기
@@ -61,22 +61,26 @@ public class TeamController {
                 TeamMember teamMember = new TeamMember();
                 teamMember.setTeam_id(teamService.view(teamName).getTeam_id());
                 teamMember.setEmployeeId(selectedEmployeeId);
-                teamMember.setRole("팀장");
+                String role = "팀장";
+                teamMember.setRole(role);
                 teamMember.setMember_name(selectedEmname);
                 teamMemberService.write(teamMember);
             }
             // 팀원 생성
-            if(member != null){
-                String[] parts = member.split("\\|");
-                String selectedEmname = parts[0];
-                Integer selectedEmployeeId = Integer.valueOf(parts[1]);
-                // 초기화 해줌
-                TeamMember teamMember = new TeamMember();
-                teamMember.setTeam_id(teamService.view(teamName).getTeam_id());
-                teamMember.setEmployeeId(selectedEmployeeId);
-                teamMember.setRole("팀원");
-                teamMember.setMember_name(selectedEmname);
-                teamMemberService.write(teamMember);
+            for(String member : members){
+                if(member != null){
+                    String[] parts = member.split("\\|");
+                    String selectedEmname = parts[0];
+                    Integer selectedEmployeeId = Integer.valueOf(parts[1]);
+                    // 초기화 해줌
+                    TeamMember teamMember = new TeamMember();
+                    teamMember.setTeam_id(teamService.view(teamName).getTeam_id());
+                    teamMember.setEmployeeId(selectedEmployeeId);
+                    String role = "팀원";
+                    teamMember.setRole(role);
+                    teamMember.setMember_name(selectedEmname);
+                    teamMemberService.write(teamMember);
+                }
             }
         }
 
@@ -85,8 +89,14 @@ public class TeamController {
 
     @GetMapping("/team/list")
     public String teamList(Model model) {
-
-        model.addAttribute("list", teamService.teamList());
+        List<Team> teams = teamService.teamList();
+        for(Team team : teams){
+            List<TeamMember> members = team.getTeamMembers();
+            if(members != null) {
+                members.removeIf(member -> member.GetTeam() == null);
+            }
+        }
+        model.addAttribute("list", teams);
 
         return "teamlist";
     }

@@ -1,6 +1,7 @@
 package com.scheduler.scheduler.service;
 
 import com.scheduler.scheduler.entity.Team;
+import com.scheduler.scheduler.entity.TeamMember;
 import com.scheduler.scheduler.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,18 @@ public class TeamService {
     }
 
     public List<Team> teamList() {
+        List<Team> teams = teamRepository.findAll();
+        for (Team team : teams) {
+            List<TeamMember> teamMembers = team.getTeamMembers();
+            if (teamMembers != null) {
+                for (TeamMember teamMember : teamMembers) {
+                    if (teamMember.GetTeam() == null) {
+                        teamMember.SetTeam(team);
+                    }
+                }
+            }
+        }
 
-        return teamRepository.findAll();
+        return teams;
     }
 }

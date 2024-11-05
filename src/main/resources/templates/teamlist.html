@@ -10,6 +10,9 @@
         <a href="write">신규 팀 등록</a>
         <div th:each="team : ${list}">
             <p th:text="${team.teamName}"></p>
+            <ul th:each="member : ${team.teamMembers}">
+                <li th:text="${member.member_name}"></li><span th:text="${member.role}"></span>
+            </ul>
         </div>
     </div>
 </body>
