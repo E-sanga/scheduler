@@ -9,12 +9,11 @@ import com.scheduler.scheduler.entity.Team;
 import com.scheduler.scheduler.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class TeamController {
@@ -30,18 +29,8 @@ public class TeamController {
 
     @GetMapping("/team/write")
     public String teamWrite(Model model) {
-        List<Employee> employees = employeeService.employeeList();
-        List<Employee> employeesToRemove = new ArrayList<>();
-        // 팀에 속한 직원을 목록에서 제거하기 위한 처리
-        for (Employee employee : employees) {
-            Integer employeeId = employee.getEmployee_id();
-            if(teamMemberService.filterView(employeeId) != null){
-                employeesToRemove.add(employee);
-            }
-        }
-        // 팀에 속한 직원을 목록에서 제거
-        employees.removeAll(employeesToRemove);
-        model.addAttribute("elist", employees);
+
+        model.addAttribute("elist", employees());
         return "teamwrite";
     }
 
@@ -59,7 +48,7 @@ public class TeamController {
                 Integer selectedEmployeeId = Integer.valueOf(parts[1]);
                 // 초기화 해줌
                 TeamMember teamMember = new TeamMember();
-                teamMember.setTeam_id(teamService.view(teamName).getTeam_id());
+                teamMember.SetTeamId(teamService.view(teamName).getTeamId());
                 teamMember.setEmployeeId(selectedEmployeeId);
                 String role = "팀장";
                 teamMember.setRole(role);
@@ -74,7 +63,7 @@ public class TeamController {
                     Integer selectedEmployeeId = Integer.valueOf(parts[1]);
                     // 초기화 해줌
                     TeamMember teamMember = new TeamMember();
-                    teamMember.setTeam_id(teamService.view(teamName).getTeam_id());
+                    teamMember.SetTeamId(teamService.view(teamName).getTeamId());
                     teamMember.setEmployeeId(selectedEmployeeId);
                     String role = "팀원";
                     teamMember.setRole(role);
@@ -99,5 +88,48 @@ public class TeamController {
         model.addAttribute("list", teams);
 
         return "teamlist";
+    }
+
+    @PostMapping("/team/delete")
+    public String teamDelete(Integer teamId) {
+
+        teamService.delete(teamId);
+        return "redirect:/team/list";
+    }
+
+    @GetMapping("/team/modify/{team_id}")
+    public String teamModify(@PathVariable("team_id") Integer teamId, Model model) {
+
+        model.addAttribute("team", teamService.updateView(teamId));
+
+        // 팀장이 존재 유무 확인을 위한 선처리
+        List<TeamMember> members = teamMemberService.memberList(teamId);
+        boolean hasLeader = members.stream().anyMatch(member -> "팀장".equals(member.getRole()));
+        model.addAttribute("members", members);
+        model.addAttribute("hasLeader", hasLeader);
+
+        model.addAttribute("elist", employees());
+        return "teammodify";
+    }
+
+    @PostMapping("/team/update/{teamId}")
+    public String teamModifyPro(@PathVariable("teamId") Integer teamId, Team team) {
+
+        teamService.update(team);
+        return "redirect:/team/list";
+    }
+
+    // 팀에 속한 직원을 목록에서 제거하기 위한 처리
+    public List<Employee> employees (){
+        List<Employee> employeeCheck = employeeService.employeeList();
+        List<Employee> employeesToRemove = new ArrayList<>();
+        for(Employee employee : employeeCheck){
+            Integer employeeId = employee.getEmployee_id();
+            if(teamMemberService.filterView(employeeId) != null){
+                employeesToRemove.add(employee);
+            }
+        }
+        employeeCheck.removeAll(employeesToRemove);
+        return employeeCheck;
     }
 }

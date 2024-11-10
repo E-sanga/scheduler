@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팀 수정폼</title>
+</head>
+<style>
+    .layout {
+        width: 500px;
+        margin: 0 auto;
+        margin-top: 40px;
+    }
+
+    .layout input {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 10px;
+    }
+</style>
+<body>
+<div class="layout">
+    <form th:action="@{/team/update/{teamId}(teamId = ${team.teamId})}" method="post">
+        <input type="text" name="teamName" th:value="${team.teamName}">
+        <div th:if="${!hasLeader}">
+            <button type="button">팀장 선택</button>
+        </div>
+        <div th:each="members : ${members}">
+            <p th:if="${members.role == '팀장'}">
+                <span th:text="${members.role} + ' : '"></span>
+                <span th:text="${members.member_name}"></span><span th:text="${members.memberId}"></span>
+                <button type="button" th:attr="data-mid=${members.memberId}, data-mrole=${members.role}">삭제</button>
+            </p>
+            <p th:if="${members.role != '팀장'}">
+                <span th:text="${members.member_name}"></span><span th:text="${members.memberId}"></span>
+                <button type="button" th:attr="data-mid=${members.memberId}">삭제</button>
+            </p>
+        </div>
+        <button type="submit">수정</button>
+    </form>
+</div>
+<script>
+    const deleteMember = (mid, mrole) => {
+        const mLeader = mrole ? 1 : 0;
+
+        const url = '/member/delete';
+        const fetchOption = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json' // 요청 헤더에 Content-Type을 추가
+            },
+            body: JSON.stringify({
+                id: mid, // 서버에서 받을 값(name)
+                role: mLeader
+            }),
+        }
+        fetch(url, fetchOption)
+            .then((response) => response.json())
+            .then((result) => {
+                console.log(result);
+                if(result.success !== 1) {
+                    alert('삭제 실패!');
+                    return false;
+                }
+                // 서버 요청 성공. DOM 요소 제거
+                document.querySelector(`[data-mid="${mid}"]`).closest('p').remove();
+            }).catch((error) => {
+            console.error('Error:', error);
+            alert('삭제 실패!');
+        });
+    };
+
+    const memberEl = document.querySelectorAll('[data-mid]');
+    memberEl.forEach((item) => {
+        item.addEventListener('click', (e)=>{
+            const el = e.target;
+            deleteMember(el.dataset.mid, el.dataset.mrole ?? null);
+        });
+    });
+    // const deleteMember = (mid) => {
+    //     document.querySelector(`[data-mid="${mid}"]`).closest('p').remove();
+    //     const url = '/member/delete';
+    //     const fetchOption = {
+    //         method: "POST",
+    //         body: JSON.stringify({
+    //             id: mid // id>> 서버에서 받을 값(name)
+    //         }),
+    //     }
+    //     fetch(url, fetchOption)
+    //     .then((response) => response.json())
+    //     .then((result) => {
+    //         console.log(result)
+    //         if(result.sucess != 1) {
+    //             alert('삭제 실패!');
+    //             return false;
+    //         }
+    //         // 서버 요청 성공.
+    //     document.querySelector(`[data-mid="${mid}"]`).closest('p').remove();
+    //     });
+    // };
+    //
+    // const memberEl = document.querySelectorAll('[data-mid]');
+    // memberEl.forEach((item) => {
+    //    item.addEventListener('click', (e)=>{
+    //        const el = e.target;
+    //        deleteMember(el.dataset.mid);
+    //    });
+    // });
+</script>
+</body>
+</html>

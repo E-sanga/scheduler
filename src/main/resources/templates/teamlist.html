@@ -6,13 +6,19 @@
 </head>
 <body>
     <div>
-      <p>전체 직원</p>
+      <p>전체 팀</p>
         <a href="write">신규 팀 등록</a>
         <div th:each="team : ${list}">
             <p th:text="${team.teamName}"></p>
+            <p th:text="${team.teamId}"></p>
             <ul th:each="member : ${team.teamMembers}">
                 <li th:text="${member.member_name}"></li><span th:text="${member.role}"></span>
             </ul>
+            <form th:action="@{/team/delete}" method="post">
+                <input type="hidden" th:value="${team.teamId}" name="teamId" />
+                <button type="submit">삭제</button>
+            </form>
+            <a th:href="@{/team/modify/{teamId}(teamId = ${team.teamId})}">수정</a>
         </div>
     </div>
 </body>

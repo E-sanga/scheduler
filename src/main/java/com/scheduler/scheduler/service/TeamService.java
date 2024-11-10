@@ -38,7 +38,21 @@ public class TeamService {
                 }
             }
         }
-
         return teams;
+    }
+
+    public void delete(Integer teamId) {
+
+        teamRepository.deleteById(teamId);
+    }
+
+    // 수정을 위한 팀보기
+    public Team updateView(Integer teamId) {
+        Team team = teamRepository.findById(teamId).get();
+        return team;
+    }
+
+    public Team update(Team team) {
+        return teamRepository.save(team);
     }
 }

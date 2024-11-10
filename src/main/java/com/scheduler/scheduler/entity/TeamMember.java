@@ -12,9 +12,11 @@ public class TeamMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer member_id;
+    @Column(name = "member_id")
+    private Integer memberId;
 
-    private Integer team_id;
+    @Column(name = "team_id")
+    private Integer teamId;
 
     @Column(name = "employee_id")
     private Integer employeeId;
@@ -27,20 +29,12 @@ public class TeamMember {
     @JoinColumn(name = "team_id", insertable = false, updatable = false)
     private Team team;
 
-    public Integer GetMemberId() {
-        return member_id;
-    }
-
-    public void SetMemberId(Integer member_id) {
-        this.member_id = member_id;
-    }
-
     public Integer GetTeamId() {
-        return team_id;
+        return teamId;
     }
 
     public void SetTeamId(Integer team_id) {
-        this.team_id = team_id;
+        this.teamId = team_id;
     }
 
     public Integer GetEmployeeId() {
@@ -70,4 +64,13 @@ public class TeamMember {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public Integer getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
+    }
+
 }
