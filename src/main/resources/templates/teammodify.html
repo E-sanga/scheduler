@@ -21,20 +21,37 @@
 <div class="layout">
     <form th:action="@{/team/update/{teamId}(teamId = ${team.teamId})}" method="post">
         <input type="text" name="teamName" th:value="${team.teamName}">
-        <div th:if="${!hasLeader}">
-            <button type="button">팀장 선택</button>
+        <div th:if="${!hasLeader}" id="leaderDiv">
+            <select id="leader" name="leader">
+                <option value="" disabled selected>팀장 선택</option>
+                <option th:each="member : ${members}"
+                    th:value="|${member.member_name}| +'|'+ |${member.memberId}| +'|'+ |${member.teamId}| +'|'+ |${member.employeeId}|"
+                    th:text="${member.member_name}"></option>
+            </select>
         </div>
         <div th:each="members : ${members}">
             <p th:if="${members.role == '팀장'}">
                 <span th:text="${members.role} + ' : '"></span>
-                <span th:text="${members.member_name}"></span><span th:text="${members.memberId}"></span>
-                <button type="button" th:attr="data-mid=${members.memberId}, data-mrole=${members.role}">삭제</button>
+                <span th:text="${members.member_name}"></span><span th:text="${members.memberId}" style="display: none;"></span>
+                <button type="button" th:attr="data-mid=${members.memberId}, data-mrole=${members.role}">변경</button>
             </p>
             <p th:if="${members.role != '팀장'}">
-                <span th:text="${members.member_name}"></span><span th:text="${members.memberId}"></span>
+                <span th:text="${members.member_name}"></span><span th:text="${members.memberId}" style="display: none;"></span>
                 <button type="button" th:attr="data-mid=${members.memberId}">삭제</button>
             </p>
         </div>
+        <p id="addMemberTag" style="display: none;"></p>
+        <div id="addMemberDiv" style="display: none;">
+            <select id="addMember" name="addMember">
+                <option value="" disabled selected>팀원 선택</option>
+                <option th:each="employee : ${elist}"
+                        th:value="|${employee.emname}| + '|' + |${employee.employee_id}| + '|' + |${team.teamId}|"
+                        th:text="${employee.emname}"></option>
+            </select>
+            <button type="button" id="completeBtn">완료</button>
+            <button type="button" id="cancelBtn">취소</button>
+        </div>
+        <button type="button" id="showAddMemberBtn">팀원 추가</button>
         <button type="submit">수정</button>
     </form>
 </div>
@@ -76,35 +93,57 @@
             deleteMember(el.dataset.mid, el.dataset.mrole ?? null);
         });
     });
-    // const deleteMember = (mid) => {
-    //     document.querySelector(`[data-mid="${mid}"]`).closest('p').remove();
-    //     const url = '/member/delete';
-    //     const fetchOption = {
-    //         method: "POST",
-    //         body: JSON.stringify({
-    //             id: mid // id>> 서버에서 받을 값(name)
-    //         }),
-    //     }
-    //     fetch(url, fetchOption)
-    //     .then((response) => response.json())
-    //     .then((result) => {
-    //         console.log(result)
-    //         if(result.sucess != 1) {
-    //             alert('삭제 실패!');
-    //             return false;
-    //         }
-    //         // 서버 요청 성공.
-    //     document.querySelector(`[data-mid="${mid}"]`).closest('p').remove();
-    //     });
-    // };
-    //
-    // const memberEl = document.querySelectorAll('[data-mid]');
-    // memberEl.forEach((item) => {
-    //    item.addEventListener('click', (e)=>{
-    //        const el = e.target;
-    //        deleteMember(el.dataset.mid);
-    //    });
-    // });
+    document.addEventListener("DOMContentLoaded", function() {
+        const addMemberDiv = document.getElementById('addMemberDiv');
+        const showAddMemberBtn = document.getElementById('showAddMemberBtn');
+        const completeBtn = document.getElementById('completeBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const addMemberTag = document.getElementById('addMemberTag');
+
+        // 팀원 추가 버튼 클릭 시 addMemberDiv 보이기
+        showAddMemberBtn.addEventListener('click', function() {
+            addMemberDiv.style.display = 'block';
+        });
+
+        // 완료 버튼 클릭 시 비동기 통신 및 addMemberDiv 숨기기
+        completeBtn.addEventListener('click', function() {
+            const select = document.getElementById('addMember');
+            const selectedOption = select.options[select.selectedIndex].value;
+            const [memberName, employeeId, teamId] = selectedOption.split('|');
+
+            // 멤버 추가 비동기 통신
+            fetch('/member/write', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    memberName: memberName,
+                    employeeId: employeeId,
+                    teamId: teamId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    addMemberDiv.style.display = 'none';
+                    addMemberTag.style.display = 'block';
+                    const spanTag = document.createElement('span');
+                    spanTag.textContent = memberName;
+                    addMemberTag.insertBefore(spanTag, addMemberTag.firstChild);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('추가 실패!');
+                });
+        });
+
+        // 취소 버튼 클릭 시 addMemberDiv 숨기기
+        cancelBtn.addEventListener('click', function() {
+            addMemberDiv.style.display = 'none';
+        });
+
+    });
 </script>
 </body>
 </html>

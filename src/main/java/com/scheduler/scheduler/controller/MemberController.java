@@ -31,4 +31,18 @@ public class MemberController {
         }
         return ResponseEntity.ok().body(Map.of("success", 1));
     }
+
+    @PostMapping("/write")
+    public ResponseEntity<?> writeMember(@RequestBody Map<String, String> payload){
+        String memberName = payload.get("memberName");
+        Integer employeeId = Integer.valueOf(payload.get("employeeId"));
+        Integer teamId = Integer.valueOf(payload.get("teamId"));
+        TeamMember teamMember = new TeamMember();
+        teamMember.setMember_name(memberName);
+        teamMember.setEmployeeId(employeeId);
+        teamMember.setTeamId(teamId);
+        teamMember.setRole("팀원");
+        teamMemberService.write(teamMember);
+        return ResponseEntity.ok().body(Map.of("success", 1));
+    }
 }

@@ -32,8 +32,8 @@ public class TeamService {
             List<TeamMember> teamMembers = team.getTeamMembers();
             if (teamMembers != null) {
                 for (TeamMember teamMember : teamMembers) {
-                    if (teamMember.GetTeam() == null) {
-                        teamMember.SetTeam(team);
+                    if (teamMember.getTeam() == null) {
+                        teamMember.setTeam(team);
                     }
                 }
             }

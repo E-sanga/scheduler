@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class TeamController {
@@ -48,10 +47,9 @@ public class TeamController {
                 Integer selectedEmployeeId = Integer.valueOf(parts[1]);
                 // 초기화 해줌
                 TeamMember teamMember = new TeamMember();
-                teamMember.SetTeamId(teamService.view(teamName).getTeamId());
+                teamMember.setTeamId(teamService.view(teamName).getTeamId());
                 teamMember.setEmployeeId(selectedEmployeeId);
-                String role = "팀장";
-                teamMember.setRole(role);
+                teamMember.setRole("팀장");
                 teamMember.setMember_name(selectedEmname);
                 teamMemberService.write(teamMember);
             }
@@ -63,10 +61,9 @@ public class TeamController {
                     Integer selectedEmployeeId = Integer.valueOf(parts[1]);
                     // 초기화 해줌
                     TeamMember teamMember = new TeamMember();
-                    teamMember.SetTeamId(teamService.view(teamName).getTeamId());
+                    teamMember.setTeamId(teamService.view(teamName).getTeamId());
                     teamMember.setEmployeeId(selectedEmployeeId);
-                    String role = "팀원";
-                    teamMember.setRole(role);
+                    teamMember.setRole("팀원");
                     teamMember.setMember_name(selectedEmname);
                     teamMemberService.write(teamMember);
                 }
@@ -82,7 +79,7 @@ public class TeamController {
         for(Team team : teams){
             List<TeamMember> members = team.getTeamMembers();
             if(members != null) {
-                members.removeIf(member -> member.GetTeam() == null);
+                members.removeIf(member -> member.getTeam() == null);
             }
         }
         model.addAttribute("list", teams);
@@ -108,12 +105,26 @@ public class TeamController {
         model.addAttribute("members", members);
         model.addAttribute("hasLeader", hasLeader);
 
+        // 팀원 추가를 위한 직원 리스트
         model.addAttribute("elist", employees());
         return "teammodify";
     }
 
     @PostMapping("/team/update/{teamId}")
-    public String teamModifyPro(@PathVariable("teamId") Integer teamId, Team team) {
+    public String teamModifyPro(@PathVariable("teamId") Integer teamId, Team team, @RequestParam("leader") String leader) {
+        // 팀원을 팀장으로 변경
+        String[] parts = leader.split("\\|");
+        String selectedMname = parts[0];
+        Integer selectedMemberId = Integer.valueOf(parts[1]);
+        Integer selectedTeamId = Integer.valueOf(parts[2]);
+        Integer selectedEmployeeId = Integer.valueOf(parts[3]);
+        TeamMember teamMember = new TeamMember();
+        teamMember.setMember_name(selectedMname);
+        teamMember.setMemberId(selectedMemberId);
+        teamMember.setTeamId(selectedTeamId);
+        teamMember.setEmployeeId(selectedEmployeeId);
+        teamMember.setRole("팀장");
+        teamMemberService.roleChange(teamMember);
 
         teamService.update(team);
         return "redirect:/team/list";

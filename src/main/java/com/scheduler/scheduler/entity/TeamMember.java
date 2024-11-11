@@ -29,48 +29,4 @@ public class TeamMember {
     @JoinColumn(name = "team_id", insertable = false, updatable = false)
     private Team team;
 
-    public Integer GetTeamId() {
-        return teamId;
-    }
-
-    public void SetTeamId(Integer team_id) {
-        this.teamId = team_id;
-    }
-
-    public Integer GetEmployeeId() {
-        return employeeId;
-    }
-
-    public String GetMemberName() {
-        return member_name;
-    }
-
-    public void SetMemberName(String member_name) {
-        this.member_name = member_name;
-    }
-
-    public Team GetTeam() {
-        return team;
-    }
-
-    public void SetTeam(Team team) {
-        this.team = team;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public Integer getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Integer memberId) {
-        this.memberId = memberId;
-    }
-
 }

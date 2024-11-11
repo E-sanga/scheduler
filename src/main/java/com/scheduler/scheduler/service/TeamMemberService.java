@@ -16,6 +16,8 @@ public class TeamMemberService {
     @Autowired
     private TeamMemberRepository teamMemberRepository;
 
+    @Async
+    @Transactional
     public void write(TeamMember teamMember) {
 
         teamMemberRepository.save(teamMember);
