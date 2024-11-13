@@ -21,7 +21,13 @@
 <div class="layout">
     <form th:action="@{/team/update/{teamId}(teamId = ${team.teamId})}" method="post">
         <input type="text" name="teamName" th:value="${team.teamName}">
-        <div th:if="${!hasLeader}" id="leaderDiv">
+
+        <div th:if="${hasLeader}">
+            <input type="hidden" name="leader" value="" />
+        </div>
+
+<!--        <div id="leaderDiv" th:style="${!hasLeader} ? 'display:block;' : 'display:none;'">-->
+        <div id="leaderDiv" th:unless="${hasLeader}">
             <select id="leader" name="leader">
                 <option value="" disabled selected>팀장 선택</option>
                 <option th:each="member : ${members}"
@@ -80,6 +86,7 @@
                 }
                 // 서버 요청 성공. DOM 요소 제거
                 document.querySelector(`[data-mid="${mid}"]`).closest('p').remove();
+
             }).catch((error) => {
             console.error('Error:', error);
             alert('삭제 실패!');
@@ -131,6 +138,9 @@
                     const spanTag = document.createElement('span');
                     spanTag.textContent = memberName;
                     addMemberTag.insertBefore(spanTag, addMemberTag.firstChild);
+                    // 선택된 select-option 요소 삭제
+                    select.options[select.selectedIndex].remove();
+
                 })
                 .catch((error) => {
                     console.error('Error:', error);

@@ -4,8 +4,77 @@
     <meta charset="UTF-8">
     <title>팀 목록</title>
 </head>
+<style>
+    .headDiv {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 90px;
+    }
+    .allaTagDiv {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .teamBtnDiv {
+        height: 60px;
+        width: 60px;
+        border: solid 1px #868e96;
+        border-radius: 50%;
+        background: #adb5bd;
+        position: relative;
+        margin: 5px;
+    }
+    .teamBtn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-decoration: none;
+        font-size: 10px;
+        color: white;
+    }
+    .aTagDiv {
+        height: 60px;
+        width: 60px;
+        border: solid 1px #adb5bd;
+        border-radius: 50%;
+        background: white;
+        position: relative;
+        margin: 5px;
+    }
+    .aTagBtn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-decoration: none;
+        font-size: 10px;
+        color: #868e96;
+    }
+    .teamBtn:hover {
+        font-weight: bold;
+    }
+    .aTagBtn:hover {
+        color: black;
+        font-weight: bold;
+    }
+</style>
 <body>
     <div>
+        <div class="headDiv">
+            <div class="allaTagDiv">
+                <div class="aTagDiv">
+                    <a href="/schedule/list" class="aTagBtn">스케줄</a>
+                </div>
+                <div class="aTagDiv">
+                    <a href="/employee/list" class="aTagBtn">직원</a>
+                </div>
+                <div class="teamBtnDiv">
+                    <a href="/team/list" class="teamBtn">팀</a>
+                </div>
+            </div>
+        </div>
       <p>전체 팀</p>
         <a href="write">신규 팀 등록</a>
         <div th:each="team : ${list}">

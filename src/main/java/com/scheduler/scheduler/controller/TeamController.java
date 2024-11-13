@@ -112,19 +112,22 @@ public class TeamController {
 
     @PostMapping("/team/update/{teamId}")
     public String teamModifyPro(@PathVariable("teamId") Integer teamId, Team team, @RequestParam("leader") String leader) {
-        // 팀원을 팀장으로 변경
-        String[] parts = leader.split("\\|");
-        String selectedMname = parts[0];
-        Integer selectedMemberId = Integer.valueOf(parts[1]);
-        Integer selectedTeamId = Integer.valueOf(parts[2]);
-        Integer selectedEmployeeId = Integer.valueOf(parts[3]);
-        TeamMember teamMember = new TeamMember();
-        teamMember.setMember_name(selectedMname);
-        teamMember.setMemberId(selectedMemberId);
-        teamMember.setTeamId(selectedTeamId);
-        teamMember.setEmployeeId(selectedEmployeeId);
-        teamMember.setRole("팀장");
-        teamMemberService.roleChange(teamMember);
+        if(leader != null && !leader.isEmpty()){
+            // 팀원을 팀장으로 변경
+            String[] parts = leader.split("\\|");
+            String selectedMname = parts[0];
+            Integer selectedMemberId = Integer.valueOf(parts[1]);
+            Integer selectedTeamId = Integer.valueOf(parts[2]);
+            Integer selectedEmployeeId = Integer.valueOf(parts[3]);
+            TeamMember teamMember = new TeamMember();
+            teamMember.setMember_name(selectedMname);
+            teamMember.setMemberId(selectedMemberId);
+            teamMember.setTeamId(selectedTeamId);
+            teamMember.setEmployeeId(selectedEmployeeId);
+            teamMember.setRole("팀장");
+            teamMemberService.roleChange(teamMember);
+            teamService.update(team);
+        }
 
         teamService.update(team);
         return "redirect:/team/list";

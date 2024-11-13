@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>스케줄 리스트</title>
+</head>
+<style>
+    /*!* 모든 요소에 box-sizing을 border-box로 설정 *!*/
+    /** {*/
+    /*    box-sizing: border-box;*/
+    /*}*/
+
+    /*!* 추가로, ::before와 ::after 의사 요소에도 적용 *!*/
+    /**::before,*/
+    /**::after {*/
+    /*    box-sizing: border-box;*/
+    /*}*/
+    /* headDiv 시작 */
+    .headDiv {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 90px;
+    }
+    .allaTagDiv {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .scheduleDiv {
+        height: 60px;
+        width: 60px;
+        border: solid 1px #868e96;
+        border-radius: 50%;
+        background: #adb5bd;
+        position: relative;
+        margin: 5px;
+    }
+    .scheduleBtn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-decoration: none;
+        font-size: 10px;
+        color: white;
+    }
+    .aTagDiv {
+        height: 60px;
+        width: 60px;
+        border: solid 1px #adb5bd;
+        border-radius: 50%;
+        background: white;
+        position: relative;
+        margin: 5px;
+    }
+    .aTagBtn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-decoration: none;
+        font-size: 10px;
+        color: #868e96;
+    }
+    .scheduleBtn:hover {
+        font-weight: bold;
+    }
+    .aTagBtn:hover {
+        color: black;
+        font-weight: bold;
+    }
+    .teamSelectBox{
+        height: 40px;
+        width: 120px;
+        border: 1px solid #868e96;
+        border-radius: 10px;
+        font-size: 13px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    /* listBox 시작 */
+    .listBox {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .dateDiv {
+        text-align: center;
+    }
+    #scheduleYear {
+        margin: 0;
+        color: #868e96;
+    }
+    .monthStyle {
+        color: #495057;
+        font-size: 30px;
+        font-weight: bolder;
+        margin: 0;
+    }
+    .employeeListBox {
+        background: #ced4da;
+        border-right: 1px solid #ced4da;
+        color: white;
+        height: 40px;
+        width: 180px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 13px;
+        font-weight: bolder;
+        flex-shrink: 0;
+    }
+    .teamListDiv {
+        display: flex;
+    }
+    .teamBox{
+        width: 50px;
+        color: white;
+        background: #495057;
+        border-bottom: 1px solid white;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .employees {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    .employeeBox {
+        height: 40px;
+        width: 130px;
+        color: #495057;
+        border-bottom: 1px solid #adb5bd;
+        border-right: 1px solid #adb5bd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #daysBox {
+        margin-top: 15px;
+        overflow-x: auto; /* 가로 스크롤을 활성화 */
+    }
+    #dayListBox {
+        display: flex;
+        flex-wrap: nowrap; /* 가로로 아이템들이 줄 바꿈 없이 나열되도록 설정 */
+        white-space: nowrap;
+    }
+    .scheduleDayBox {
+        display: flex;
+        flex-wrap: nowrap; /* 가로로 아이템들이 줄 바꿈 없이 나열되도록 설정 */
+        white-space: nowrap;
+    }
+    .dayBox {
+        height: 40px;
+        width: 50px;
+        background: #adb5bd;
+        color: #495057;
+        border-right: 1px solid white;
+        text-align: center;
+        line-height: 40px;
+        flex-shrink: 0;
+    }
+    .closeDayBox {
+        height: 40px;
+        width: 50px;
+        border-bottom: 1px solid #adb5bd;
+        border-right: 1px solid #adb5bd;
+        text-align: center;
+        line-height: 40px;
+        flex-shrink: 0;
+    }
+
+</style>
+<body>
+<div class="headDiv">
+    <div class="allaTagDiv">
+        <div class="scheduleDiv">
+            <a href="/schedule/list" class="scheduleBtn">스케줄</a>
+        </div>
+        <div class="aTagDiv">
+            <a href="/employee/list" class="aTagBtn">직원</a>
+        </div>
+        <div class="aTagDiv">
+            <a href="/team/list" class="aTagBtn">팀</a>
+        </div>
+    </div>
+    <div class="dateDiv">
+        <p id="scheduleYear"></p>
+        <p class="monthStyle"><span id="scheduleMonth"></span><span>월</span></p>
+    </div>
+    <div class="teamSelectBox">
+        <span>전체 팀</span>
+    </div>
+</div>
+<div class="listBox">
+    <div>
+        <div class="employeeListBox">직원 목록</div>
+        <div th:each="entry : ${teamMemberMap}">
+            <div class="teamListDiv">
+                <div th:text="${entry.key}" class="teamBox"></div>
+                <div class="employees">
+                    <div th:each="teamMember : ${entry.value}" class="employeeBox">
+                        <span th:text="${teamMember.employeeId}" style="display: none;"></span>
+                        <span th:text="${teamMember.member_name}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="daysBox">
+        <div id="dayListBox"></div>
+        <div id="scheduleDaysBox"></div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function (){
+        const scheduleYear = document.getElementById('scheduleYear');
+        const scheduleMonth = document.getElementById('scheduleMonth');
+        const today = new Date();
+        let year = today.getFullYear();
+        let month = today.getMonth() + 1;
+        scheduleYear.textContent = year;
+        scheduleMonth.textContent = month;
+
+        const teamListDivs = document.querySelectorAll('.teamListDiv');
+        let totalEmployeeBoxCount = 0;
+
+        teamListDivs.forEach(function (teamListDiv) {
+            const teamBox = teamListDiv.querySelector('.teamBox');
+            const employeeBoxes = teamListDiv.querySelectorAll('.employeeBox');
+
+            const employeeBoxCount = employeeBoxes.length;
+            totalEmployeeBoxCount += employeeBoxCount;
+
+            const employeeBoxHeight = employeeBoxes[0].offsetHeight;
+            const totalHeight = employeeBoxes.length * employeeBoxHeight;
+            teamBox.style.height = totalHeight + 'px';
+        });
+
+        for (let i = 1; i<= totalEmployeeBoxCount; i++) {
+            const scheduleDayBox = document.createElement('div');
+            scheduleDayBox.className = 'scheduleDayBox';
+            scheduleDaysBox.appendChild(scheduleDayBox);
+            if (month === 11) { // month가 11월인 경우
+                for (let j = 1; j <= 30; j++) {
+                    const closeDayBox = document.createElement('div');
+                    closeDayBox.className = 'closeDayBox';
+                    scheduleDayBox.appendChild(closeDayBox);
+                }
+            }
+        }
+
+        if (month === 11) { // month가 11월인 경우
+            for (let i = 1; i <= 30; i++) {
+                const dayBox = document.createElement('div');
+                dayBox.className = 'dayBox';
+                dayBox.textContent = i;
+                dayListBox.appendChild(dayBox);
+            }
+        }
+
+    });
+</script>
+</body>
+</html>
