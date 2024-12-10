@@ -175,8 +175,15 @@
         text-align: center;
         line-height: 40px;
         flex-shrink: 0;
+        font-size: 13px;
+        font-weight: bold;
+        color: #495057;
+        background-color: white;
     }
-
+    .closeDayBox:hover {
+        background: #ced4da;
+        cursor: pointer;
+    }
 </style>
 <body>
 <div class="headDiv">
@@ -206,8 +213,7 @@
             <div class="teamListDiv">
                 <div th:text="${entry.key}" class="teamBox"></div>
                 <div class="employees">
-                    <div th:each="teamMember : ${entry.value}" class="employeeBox">
-                        <span th:text="${teamMember.employeeId}" style="display: none;"></span>
+                    <div th:each="teamMember : ${entry.value}" class="employeeBox" th:attr="data-employee-id=${teamMember.employeeId}">
                         <span th:text="${teamMember.member_name}"></span>
                     </div>
                 </div>
@@ -218,11 +224,18 @@
         <div id="dayListBox"></div>
         <div id="scheduleDaysBox"></div>
     </div>
-
 </div>
+
+<!-- sList 데이터를 자바스크립트로 전달 -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const sList = /*[[${sList}]]*/ [];
+    /*]]>*/
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function (){
+        // sList를 JSON 형식으로 변환
         const scheduleYear = document.getElementById('scheduleYear');
         const scheduleMonth = document.getElementById('scheduleMonth');
         const today = new Date();
@@ -233,6 +246,8 @@
 
         const teamListDivs = document.querySelectorAll('.teamListDiv');
         let totalEmployeeBoxCount = 0;
+        // 직원번호 저장을 위한 배열
+        const employeeIds = [];
 
         teamListDivs.forEach(function (teamListDiv) {
             const teamBox = teamListDiv.querySelector('.teamBox');
@@ -244,19 +259,61 @@
             const employeeBoxHeight = employeeBoxes[0].offsetHeight;
             const totalHeight = employeeBoxes.length * employeeBoxHeight;
             teamBox.style.height = totalHeight + 'px';
+
+            // 직원 박스에서 직원 번호 추출
+            employeeBoxes.forEach(function (employeeBox){
+               const employeeId = employeeBox.getAttribute('data-employee-id');
+               employeeIds.push(employeeId);
+            });
         });
 
         for (let i = 1; i<= totalEmployeeBoxCount; i++) {
             const scheduleDayBox = document.createElement('div');
             scheduleDayBox.className = 'scheduleDayBox';
             scheduleDaysBox.appendChild(scheduleDayBox);
-            if (month === 11) { // month가 11월인 경우
-                for (let j = 1; j <= 30; j++) {
-                    const closeDayBox = document.createElement('div');
-                    closeDayBox.className = 'closeDayBox';
-                    scheduleDayBox.appendChild(closeDayBox);
+            if (employeeIds[i - 1]) {
+                if (month === 11) { // month가 11월인 경우
+                    for (let j = 1; j <= 30; j++) {
+                        const closeDayBox = document.createElement('div');
+                        closeDayBox.className = 'closeDayBox';
+                        scheduleDayBox.appendChild(closeDayBox);
+                    }
+                }
+                if (month === 12) { // month가 12월인 경우
+                    for (let j = 1; j <= 31; j++) {
+                        const closeDayBox = document.createElement('div');
+                        closeDayBox.className = 'closeDayBox';
+
+                        const hiddenData = document.createElement('input');
+                        hiddenData.type = 'hidden';
+                        hiddenData.value = `${year}-${month}-${j}`;
+                        hiddenData.setAttribute('data-employee-id', employeeIds[i - 1]);
+
+                        // sList와 날짜, 직원 번호 대조 후 색상 변경
+                        const dateString = `${year}-${String(month).padStart(2, '0')}-${String(j).padStart(2, '0')}`;
+                        const employeeIdData = String(employeeIds[i - 1]);
+                        sList.forEach(item => {
+                            const itemDateString = new Date(item.closedDay).toISOString().split('T')[0];
+                            const itemImployeeId = String(item.employeeId);
+                            if (itemImployeeId === employeeIdData && itemDateString === dateString) {
+                                closeDayBox.style.backgroundColor = '#FFEB00';
+                                closeDayBox.textContent = '휴무';
+                            }
+                        });
+
+                        scheduleDayBox.appendChild(closeDayBox);
+                        closeDayBox.appendChild(hiddenData);
+                    }
                 }
             }
+        }
+        // 휴무일 추가를 위한 이벤트 리스너 추가
+        const closeDayBoxes = document.getElementsByClassName("closeDayBox");
+        Array.from(closeDayBoxes).forEach(function(closeDayBox) {
+            closeDayBox.addEventListener('click', closed);
+        });
+        function closed() {
+            alert("휴무를 추가하시겠습니까?");
         }
 
         if (month === 11) { // month가 11월인 경우
@@ -268,6 +325,14 @@
             }
         }
 
+        if (month === 12) { // month가 12월인 경우
+            for (let i = 1; i <= 31; i++) {
+                const dayBox = document.createElement('div');
+                dayBox.className = 'dayBox';
+                dayBox.textContent = i;
+                dayListBox.appendChild(dayBox);
+            }
+        }
     });
 </script>
 </body>

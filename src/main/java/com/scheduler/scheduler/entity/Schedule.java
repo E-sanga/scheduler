@@ -17,18 +17,13 @@ public class Schedule {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "closed_day")
-    private Date closed_day;
+    private Date closedDay;
+
+    @Column(name = "employee_id")
+    private Integer employeeId;
 
     // 휴무일을 직원 리스트로 불러가기 위한 처리
     @OneToOne(mappedBy = "schedule")
     private Employee employee;
-
-    public Date getClosedDay() {
-        return closed_day;
-    }
-
-    public void setClosedDay(Date closed_day) {
-        this.closed_day = closed_day;
-    }
 
 }
