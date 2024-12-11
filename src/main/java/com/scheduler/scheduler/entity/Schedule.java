@@ -11,7 +11,8 @@ public class Schedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer schedule_Id;
+    @Column(name = "schedule_Id")
+    private Integer scheduleId;
 
     private String emname;
 
