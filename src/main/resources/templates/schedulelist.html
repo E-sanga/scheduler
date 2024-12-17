@@ -204,7 +204,7 @@
 <div class="headDiv">
     <div class="allaTagDiv">
         <div class="scheduleDiv">
-            <a href="/schedule/list" class="scheduleBtn">스케줄</a>
+            <a href="/schedule/list" class="scheduleBtn" id="scheduleBtn">스케줄</a>
         </div>
         <div class="aTagDiv">
             <a href="/employee/list" class="aTagBtn">직원</a>
@@ -265,9 +265,73 @@
         const today = new Date();
         let year = today.getFullYear();
         let month = today.getMonth() + 1;
+
+        // 달 이동 처리를 거쳤을 경우
+        // 쿠키에서 특정 값을 가져오는 함수
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // 쿠키에서 'month' 값 가져오기
+        const cookieMonth = getCookie('month');
+        if (cookieMonth) {
+            const parsedMonth = parseInt(cookieMonth, 10);
+            if (!isNaN(parsedMonth)) {
+                month = parsedMonth;
+            } else {
+                console.error('Invalid month value in cookie:', cookieMonth);
+            }
+        }
+        // 쿠키에서 'year' 값 가져오기
+        const cookieYear = getCookie('year');
+        if (cookieYear) {
+            const parsedYear = parseInt(cookieYear, 10);
+            if (!isNaN(parsedYear)) {
+                year = parsedYear;
+            } else {
+                console.error('Invalid month value in cookie:', parsedYear);
+            }
+        }
+
         scheduleYear.textContent = year;
         scheduleMonth.textContent = month + '월';
-        // monthLeftBtn monthRightBtn
+
+        // 이전 달로 이동을 위한 처리
+        document.getElementById('monthLeftBtn').addEventListener('click', monthLeftSelect);
+        function monthLeftSelect() {
+            if (month === 1) {
+                let lastYearMonth = 12;
+                let lastYear = year - 1;
+                document.cookie = `month=${lastYearMonth}; path=/schedule`;
+                document.cookie = `year=${lastYear}; path=/schedule`;
+            } else {
+                let leftMonth = month - 1;
+                document.cookie = `month=${leftMonth}; path=/schedule`;
+            }
+            location.href = '/schedule/list';
+        }
+
+        // 다음 달로 이동을 위한 처리
+        document.getElementById('monthRightBtn').addEventListener('click', monthRightSelect);
+        function monthRightSelect() {
+            if (month === 12) {
+                let nextYearMonth = 1;
+                let nextYear = year + 1;
+                document.cookie = `month=${nextYearMonth}; path=/schedule`;
+                document.cookie = `year=${nextYear}; path=/schedule`;
+            } else {
+                let RightMonth = month + 1;
+                document.cookie = `month=${RightMonth}; path=/schedule`;
+            }
+            location.href = '/schedule/list';
+        }
 
         const teamListDivs = document.querySelectorAll('.teamListDiv');
         let totalEmployeeBoxCount = 0;
@@ -482,6 +546,7 @@
             }
         }
 
+        // 팀별로 보기를 위한 처리
         const teamScheduleSelect = document.getElementById('teamSchedule');
         teamScheduleSelect.addEventListener('change', function(event) {
             const selectedValue = event.target.value;
@@ -491,6 +556,18 @@
                 console.log(selectedValue);
             }
         });
+
+        // 특정 쿠키를 삭제하는 함수
+        function deleteCookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/schedule; domain=' + window.location.hostname + ';';
+        }
+        // 'month' 쿠키 삭제
+        deleteCookie('month');
+        // 'year' 쿠키 삭제
+        document.getElementById('scheduleBtn').addEventListener('click', deleteCookieYear);
+        function deleteCookieYear() {
+            deleteCookie('year');
+        }
     });
 </script>
 </body>
