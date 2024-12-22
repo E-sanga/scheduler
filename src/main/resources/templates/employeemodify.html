@@ -5,25 +5,98 @@
     <title>직원 수정폼</title>
 </head>
 <style>
-    .layout {
-        width: 500px;
+    .layout{
+        width: 460px;
         margin: 0 auto;
         margin-top: 40px;
     }
-
-    .layout input {
+    .layout input, textarea{
         width: 100%;
         box-sizing: border-box;
-        margin-top: 10px;
+    }
+    .employeeTitle{
+        color: #495057;
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .classifyBtnGroup{
+        margin-top: 35px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+    }
+    .classifyBtnGroup button{
+        width: 150px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        background-color: #ced4da;
+        color: #adb5bd;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .classifyBtnGroup button.selected{
+        background-color: #82c1f5;
+        color: white;
+    }
+    .inputStyle{
+        height: 50px;
+        border: 1px solid #868e96;
+        border-radius: 10px;
+        color: #495057;
+        font-size: 14px;
+        margin-top: 25px;
+        text-align: center;
+    }
+    .employeeBtnGroup{
+        margin-top: 25px;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .writeBtn{
+        width: 100px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        background-color: #82c1f5;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .cancelBtn{
+        margin-left: 4px;
+        width: 100px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        background-color: #f06e54;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
     }
 </style>
 <body>
 <div class="layout">
     <form th:action="@{/employee/update/{employee_id}(employee_id = ${employee.employee_id})}" method="post">
+        <input class="" name="classify" type="text" th:value="${employee.classify}">
         <input name="emname" type="text" th:value="${employee.emname}">
-        <input name="classify" type="text" th:value="${employee.classify}">
         <input name="joindate" type="text" th:value="${#dates.format(employee.join_date, 'yyyy-MM-dd')}">
         <button type="submit">수정</button>
+        <p class="employeeTitle">직원 정보 수정</p>
+        <div class="classifyBtnGroup">
+            <button type="button" onclick="selectButton(this, '배송기사')" class="selected">배송기사</button>
+            <button type="button" onclick="selectButton(this, '집화기사')">집화기사</button>
+            <button type="button" onclick="selectButton(this, '배송집화기사')">배송집화기사</button>
+        </div>
+        <input type="hidden" id="selectedButtonValue" name="classify" value="배송기사">
+        <input type="text" name="emname" class="inputStyle" placeholder="이름을 입력해 주세요.">
+        <input type="text" name="joindate" class="inputStyle" placeholder="입사일을 입력해주세요. (형식 : 2000-01-01)">
+        <div class="employeeBtnGroup">
+            <button type="submit" class="writeBtn">완료</button>
+            <button type="button" class="cancelBtn">취소</button>
+        </div>
     </form>
 </div>
 </body>

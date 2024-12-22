@@ -197,10 +197,10 @@
             <a href="/schedule/list" class="scheduleBtn" id="scheduleBtn">스케줄</a>
         </div>
         <div class="aTagDiv">
-            <a href="/employee/list" class="aTagBtn">직원</a>
+            <a href="/employee/list" class="aTagBtn" id="aTagBtnEmployee">직원</a>
         </div>
         <div class="aTagDiv">
-            <a href="/team/list" class="aTagBtn">팀</a>
+            <a href="/team/list" class="aTagBtn" id="aTagBtnTeam">팀</a>
         </div>
     </div>
     <div class="dateDiv">
@@ -484,6 +484,7 @@
                 // 휴무 구분을 위한 추가
                 event.target.style.backgroundColor = '#FFEB00';
                 event.target.textContent = '휴무';
+
             } else {
                 const deleteScheduleId = deleteElement.dataset.scheduleId;
                 // 스케줄 삭제 비동기 통신
@@ -555,6 +556,8 @@
         deleteCookie('month');
         // 'year' 쿠키 삭제
         document.getElementById('scheduleBtn').addEventListener('click', deleteCookieYear);
+        document.getElementById('aTagBtnEmployee').addEventListener('click', deleteCookieYear);
+        document.getElementById('aTagBtnTeam').addEventListener('click', deleteCookieYear);
         function deleteCookieYear() {
             deleteCookie('year');
         }

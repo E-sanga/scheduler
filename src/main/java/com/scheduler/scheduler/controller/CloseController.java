@@ -1,7 +1,6 @@
 package com.scheduler.scheduler.controller;
 
 import com.scheduler.scheduler.entity.Schedule;
-import com.scheduler.scheduler.entity.TeamMember;
 import com.scheduler.scheduler.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
