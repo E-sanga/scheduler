@@ -8,9 +8,8 @@
     .layout{
         width: 460px;
         margin: 0 auto;
-        margin-top: 40px;
     }
-    .layout input, textarea{
+    .layout input{
         width: 100%;
         box-sizing: border-box;
     }
@@ -55,7 +54,7 @@
         display: flex;
         justify-content: flex-end;
     }
-    .writeBtn{
+    .updateBtn{
         width: 100px;
         height: 50px;
         border: none;
@@ -80,24 +79,44 @@
 <body>
 <div class="layout">
     <form th:action="@{/employee/update/{employee_id}(employee_id = ${employee.employee_id})}" method="post">
-        <input class="" name="classify" type="text" th:value="${employee.classify}">
-        <input name="emname" type="text" th:value="${employee.emname}">
-        <input name="joindate" type="text" th:value="${#dates.format(employee.join_date, 'yyyy-MM-dd')}">
-        <button type="submit">수정</button>
         <p class="employeeTitle">직원 정보 수정</p>
-        <div class="classifyBtnGroup">
-            <button type="button" onclick="selectButton(this, '배송기사')" class="selected">배송기사</button>
+        <div class="classifyBtnGroup" th:value="${employee.classify}">
+            <button type="button" onclick="selectButton(this, '배송기사')">배송기사</button>
             <button type="button" onclick="selectButton(this, '집화기사')">집화기사</button>
             <button type="button" onclick="selectButton(this, '배송집화기사')">배송집화기사</button>
         </div>
-        <input type="hidden" id="selectedButtonValue" name="classify" value="배송기사">
-        <input type="text" name="emname" class="inputStyle" placeholder="이름을 입력해 주세요.">
-        <input type="text" name="joindate" class="inputStyle" placeholder="입사일을 입력해주세요. (형식 : 2000-01-01)">
+        <input type="hidden" id="selectedButtonValue" name="classify">
+        <input type="text" name="emname" class="inputStyle" th:value="${employee.emname}" maxlength="10" required>
+        <input type="text" name="joindate" class="inputStyle" th:value="${#dates.format(employee.join_date, 'yyyy-MM-dd')}" pattern="\d{4}-\d{2}-\d{2}" required>
         <div class="employeeBtnGroup">
-            <button type="submit" class="writeBtn">완료</button>
+            <button type="submit" class="updateBtn">완료</button>
             <button type="button" class="cancelBtn">취소</button>
         </div>
     </form>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const classifyValue = document.querySelector('.classifyBtnGroup').getAttribute('value');
+        const buttons = document.querySelectorAll('.classifyBtnGroup button');
+        buttons.forEach(button => {
+            if (button.textContent.trim() === classifyValue) {
+                button.classList.add('selected');
+                document.getElementById('selectedButtonValue').value = classifyValue;
+            }
+        });
+    });
+    // 직원 등록 버튼의 처리를 위한 코드
+    function selectButton(button, value) {
+        // 모든 버튼의 'selected' 클래스 제거
+        const  buttons = document.querySelectorAll('.classifyBtnGroup button');
+        buttons.forEach(btn => btn.classList.remove('selected'));
+
+        // 클릭된 버튼에 'selected' 클래스 추가
+        button.classList.add('selected');
+
+        // 숨겨진 입력 필드에 선택된 버튼의 값 설정
+        document.getElementById('selectedButtonValue').value = value;
+    }
+</script>
 </body>
 </html>

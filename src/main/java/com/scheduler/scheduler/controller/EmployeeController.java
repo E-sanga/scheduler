@@ -19,11 +19,11 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @GetMapping("/employee/write")
-    public String employeeWriteForm() {
-
-        return "employeewrite";
-    }
+//    @GetMapping("/employee/write")
+//    public String employeeWriteForm() {
+//
+//        return "employeewrite";
+//    }
 
     @PostMapping("/employee/writepro")
     public String employeeWritePro(Employee employee, String joindate) {
