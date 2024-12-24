@@ -29,11 +29,6 @@ public class EmployeeService {
         employeeRepository.deleteById(employee_id);
     }
 
-    public Employee view(Integer employee_id) {
-        Employee employee = employeeRepository.findById(employee_id).get();
-        return employee;
-    }
-
     public void update(Employee employee) {
         Employee existingEmployee = employeeRepository.findById(employee.getEmployee_id()).orElse(null);
         if (existingEmployee != null) {

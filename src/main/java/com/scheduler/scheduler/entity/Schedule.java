@@ -23,8 +23,4 @@ public class Schedule {
     @Column(name = "employee_id")
     private Integer employeeId;
 
-    // 휴무일을 직원 리스트로 불러가기 위한 처리
-    @OneToOne(mappedBy = "schedule")
-    private Employee employee;
-
 }

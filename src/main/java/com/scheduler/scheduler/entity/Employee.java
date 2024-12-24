@@ -19,14 +19,6 @@ public class Employee {
 
     private Date join_date;
 
-    // 휴무일을 가져오기 위한 처리
-    @OneToOne
-    @JoinColumn(name = "schedule_id") // Schedule의 외래 키를 참조
-    private Schedule schedule;
-
-    // Schedule의 closedDay를 가져오는 getter
-    public Date getClosedDay() {
-        return schedule != null ? schedule.getClosedDay() : null;
-    }
+    private String closeDay;
 
 }

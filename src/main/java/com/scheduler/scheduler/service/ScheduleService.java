@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -18,6 +19,14 @@ public class ScheduleService {
     public List<Schedule> list(){
 
         return scheduleRepository.findAll();
+    }
+
+    public List<Schedule> filterList(Integer employeeId) {
+        if (employeeId != null) {
+            return scheduleRepository.findByEmployeeId(employeeId);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Async

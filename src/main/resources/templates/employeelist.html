@@ -5,8 +5,19 @@
     <title>직원 목록</title>
 </head>
 <style>
-    /* 직원 등록 모달 시작 */
+    /* 모달 시작 */
     .writeModal{
+        position: absolute;
+        display: none;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+    .updateModal{
         position: absolute;
         display: none;
         justify-content: center;
@@ -88,6 +99,16 @@
         font-size: 16px;
         cursor: pointer;
     }
+    .modalUpdateBtn{
+        width: 100px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        background-color: #82c1f5;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
     .cancelBtn{
         margin-left: 10px;
         width: 100px;
@@ -99,7 +120,7 @@
         font-size: 16px;
         cursor: pointer;
     }
-    /* 직원 등록 모달 끝 */
+    /* 모달 끝 */
     .headDiv {
         display: flex;
         justify-content: space-between;
@@ -206,8 +227,7 @@
         display: inline-block;
     }
     .employeeColor{
-        height: 140px;
-        border-bottom: 1px dotted #adb5bd;
+        height: 70px;
     }
     .employeeArrayDiv{
         display: flex;
@@ -221,6 +241,8 @@
     }
     .employeeUpdateBtn{
         width: 35px;
+        border: none;
+        background: none;
     }
     .employeeUpdateBtn:hover{
         cursor: pointer;
@@ -261,11 +283,18 @@
     }
     .employeeJoin{
         text-align: center;
-        color: #656B70;
+        color: #868e96;
         font-size: 16px;
+    }
+    .employeeCardBottom{
+        height: 154px;
+        box-sizing: border-box;
+        border: 5px solid white;
+        background-color: #edeef0;
     }
     .employeeClose{
         text-align: center;
+        margin: 16px 0 0 0;
     }
     .closeOne{
         color: #495057;
@@ -309,6 +338,29 @@
             </div>
         </div>
     </div>
+    <div class="updateModal">
+        <div class="modalBody">
+            <div class="layout">
+                <form action="update" method="post">
+                    <p class="employeeTitle">직원 정보 수정</p>
+                    <div class="classifyBtnGroup">
+                        <button type="button" onclick="selectButton(this, '배송기사')">배송기사</button>
+                        <button type="button" onclick="selectButton(this, '집화기사')">집화기사</button>
+                        <button type="button" onclick="selectButton(this, '배송집화기사')">배송집화기사</button>
+                    </div>
+                    <input type="hidden" id="updateEmployeeId" name="employee_id">
+                    <input type="hidden" id="selectedButtonValueTwo" name="classify">
+                    <input type="text" id="updateName" name="emname" class="inputStyle" maxlength="10" placeholder="이름을 입력해 주세요." required>
+                    <input type="text" id="updateJoinDate" name="joindate" class="inputStyle" pattern="\d{4}-\d{2}-\d{2}"
+                           placeholder="입사일을 입력해주세요. (형식 : 2000-01-01)" required>
+                    <div class="employeeBtnGroup">
+                        <button type="submit" class="modalUpdateBtn">완료</button>
+                        <button type="button" class="cancelBtn">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div>
         <div class="headDiv">
             <div class="allaTagDiv">
@@ -332,28 +384,39 @@
                 <div th:each="employee : ${list}" class="employeeCard">
                     <div class="employeeColor">
                         <div class="employeeArrayDiv">
-                            <a th:href="@{/employee/modify/{employee_id}(employee_id = ${employee.employee_id})}" class="employeeUpdateBtn">
+                            <button class="employeeUpdateBtn">
                                 <img src="/images/updateImage.svg" alt="Icon" class="employeeUpdateImg">
-                            </a>
+                            </button>
                             <span th:text="${employee.classify}" class="classifyStyle"></span>
                             <form th:action="@{/employee/delete}" method="post" class="employeeDeleteFrom">
-                                <input type="hidden" th:value="${employee.employee_id}" name="employee_id" />
+                                <input type="hidden" th:value="${employee.employee_id}" name="employee_id" class="employeeIdValue"/>
                                 <button type="submit" class="employeeDeleteBtn">
                                     <img src="/images/delete.svg" alt="Icon" class="employeeDeleteImg">
                                 </button>
                             </form>
                         </div>
-                        <p th:text="${employee.emname}" class="employeeName"></p>
-                        <p th:text="${#dates.format(employee.join_date, 'yyyy-MM-dd')}" class="employeeJoin"></p>
                     </div>
-                    <p class="employeeClose"><span class="closeOne"></span><span class="closeTwo">월의 휴무일</span></p>
-                    <div th:text="${employee.schedule != null ? #dates.format(employee.schedule, 'yyyy-MM-dd') : '없음'}" class="closeDay"></div>
+                    <p th:text="${employee.emname}" class="employeeName"></p>
+                    <p th:text="${#dates.format(employee.join_date, 'yyyy-MM-dd')}" class="employeeJoin"></p>
+                    <div class="employeeCardBottom">
+                        <p class="employeeClose"><span class="closeOne"></span><span class="closeTwo">월의 휴무일</span></p>
+                        <div th:text="${employee.closeDay}" class="closeDay"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // 모달창 닫기를 위한 코드
+        document.querySelectorAll('.cancelBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const modal = e.target.closest('.modalBody').parentNode;
+                modal.style.display = "none";
+                document.body.style.overflow = "";
+            });
+        })
+
         const employeeColorDivs = document.querySelectorAll('.employeeColor');
 
         // 직원 분류에 따른 값의 추가
@@ -362,11 +425,11 @@
            let color;
 
            if(classifyStyle === '배송집화기사') {
-               color = 'linear-gradient(#C8E6D2, white)';
+               color = 'linear-gradient(to right, #C8E6D2, #f7fffa)';
            } else if (classifyStyle === '배송기사'){
-               color = 'linear-gradient(#C7D8E8, white)';
+               color = 'linear-gradient(to right, #C7D8E8, #f2faff)';
            } else if (classifyStyle === '집화기사') {
-               color = 'linear-gradient(#FAF1D6, white)';
+               color = 'linear-gradient(to right, #FAF1D6, #fffcf5)';
            } else {
                console.error('Unknown classifyStyle value:', classifyStyle);
            }
@@ -384,6 +447,53 @@
         for (let i = 0; i< closeMonths.length; i++) {
             closeMonths[i].textContent = monthString;
         }
+
+        // 직원 수정을 위한 선처리
+        const updateButtons = document.querySelectorAll('.employeeUpdateBtn');
+        // 직원 수정 모달창을 열기 위한 코드
+        const updateModal = document.querySelector('.updateModal');
+
+        updateButtons.forEach(button => {
+           button.addEventListener('click', function () {
+               const employeeCard = button.closest('.employeeCard');
+               if (employeeCard) {
+                   const employeeIdValue = employeeCard.querySelector('.employeeIdValue');
+                   const employeeId = employeeIdValue.value;
+                   const employeeClassifyValue = employeeCard.querySelector('.classifyStyle');
+                   const employeeClassify = employeeClassifyValue.textContent;
+                   const employeeNameValue = employeeCard.querySelector('.employeeName');
+                   const employeeName = employeeNameValue.textContent;
+                   const employeeJoinValue = employeeCard.querySelector('.employeeJoin');
+                   const employeeJoin = employeeJoinValue.textContent;
+                   const buttons = document.querySelectorAll('.classifyBtnGroup button');
+                   document.getElementById('updateEmployeeId').value = employeeId;
+                   document.getElementById('updateName').value = employeeName;
+                   document.getElementById('updateJoinDate').value = employeeJoin;
+
+                   buttons.forEach(button => {
+                      button.classList.remove('selected')
+                   });
+
+                   buttons.forEach(button => {
+                       if (button.textContent.trim() === employeeClassify) {
+                           button.classList.add('selected');
+                           document.getElementById('selectedButtonValueTwo').value = employeeClassify;
+                       }
+                   });
+               } else {
+                   console.log('직원 카드가 존재하지 않음');
+               }
+               // 페이지 맨 위로 스크롤하고 스크롤을 막기 위한 코드
+               window.scrollTo({
+                   top: 0,
+                   behavior: 'smooth'
+               });
+               setTimeout(function (){
+                   updateModal.style.display = "flex";
+                   document.body.style.overflow = "hidden";
+               }, 400);
+           });
+        });
     });
     // 직원 등록 모달창을 열기 위한 코드
     const writeModal = document.querySelector('.writeModal');
@@ -398,27 +508,20 @@
             document.getElementById('selectedButtonValue').value = defaultButton.textContent;
         }
     });
-    // 직원 등록 모달창을 닫기 위한 코드
-    const writeModalClose = document.querySelector('.cancelBtn');
 
-    writeModalClose.addEventListener("click", ()=>{
-        writeModal.style.display = "none";
-        document.body.style.overflow = "";
-    });
-    // 직원 등록 버튼의 처리를 위한 코드
+    // 직원 분류 버튼의 처리를 위한 코드
     function selectButton(button, value) {
-        // 모든 버튼의 'selected' 클래스 제거
+        // 모든 분류 버튼의 'selected' 클래스 제거
         const  buttons = document.querySelectorAll('.classifyBtnGroup button');
         buttons.forEach(btn => btn.classList.remove('selected'));
 
-        // 클릭된 버튼에 'selected' 클래스 추가
+        // 클릭된 분류 버튼에 'selected' 클래스 추가
         button.classList.add('selected');
 
-        // 숨겨진 입력 필드에 선택된 버튼의 값 설정
+        // 숨겨진 입력 필드에 선택된 분류 버튼의 값 설정
         document.getElementById('selectedButtonValue').value = value;
+        document.getElementById('selectedButtonValueTwo').value = value;
     }
-    // 직원 수정 처리를 위한 실험
-    // const updateEmployee = document.querySelector()
 </script>
 </body>
 </html>
