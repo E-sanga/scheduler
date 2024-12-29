@@ -201,6 +201,11 @@
         color: #495057;
         background-color: white;
     }
+    .employeeWriteBtn:hover{
+        color: white;
+        background-color: #868e96;
+        cursor: pointer;
+    }
     /* list 시작 */
     .employeeAllCard{
         margin-top: 20px;
@@ -234,10 +239,7 @@
         justify-content: space-between;
         align-items: center;
         text-align: center;
-    }
-    .employeeWriteBtn:hover{
-        color: white;
-        background-color: #868e96;
+        height: 51px;
     }
     .employeeUpdateBtn{
         width: 35px;
@@ -306,14 +308,15 @@
         font-size: 18px;
     }
     .closeDay{
-        height: 90px;
-        width: 260px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        height: 70px;
+        text-align: center;
         color: #656B70;
         font-size: 20px;
         font-weight: bold;
+        white-space: nowrap;
+        overflow-x: auto;
+        padding: 10px;
+        margin: 15px 0 0 0;
     }
 </style>
 <body>
@@ -400,7 +403,7 @@
                     <p th:text="${#dates.format(employee.join_date, 'yyyy-MM-dd')}" class="employeeJoin"></p>
                     <div class="employeeCardBottom">
                         <p class="employeeClose"><span class="closeOne"></span><span class="closeTwo">월의 휴무일</span></p>
-                        <div th:text="${employee.closeDay}" class="closeDay"></div>
+                        <p th:text="${employee.closeDay}" class="closeDay"></p>
                     </div>
                 </div>
             </div>

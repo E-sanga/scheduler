@@ -59,6 +59,138 @@
         color: black;
         font-weight: bold;
     }
+    .teamStyle {
+        color: #495057;
+        font-size: 30px;
+        font-weight: bolder;
+        margin: 0;
+    }
+    .teamWrite{
+        width: 214px;
+    }
+    .teamWriteBtn{
+        height: 40px;
+        width: 120px;
+        border: 1px solid #868e96;
+        border-radius: 10px;
+        font-size: 13px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: 25px 0 0 86px;
+        text-decoration-line: none;
+        color: #495057;
+        background-color: white;
+    }
+    .teamWriteBtn:hover{
+        color: white;
+        background-color: #868e96;
+        cursor: pointer;
+    }
+    /* 리스트 시작 */
+    .teamAllCard{
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 20px;
+        border-top: 1px solid #adb5bd;
+        padding-top: 20px;
+    }
+    .teamCard{
+        box-sizing: border-box;
+        width: 260px;
+        height: 190px;
+        background-color: white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        margin: 20px;
+    }
+    .teamCard:hover{
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
+    .teamCard:hover .teamUpdateImg, .teamCard:hover .teamDeleteBtn {
+        display: inline-block;
+    }
+    .teamCardTop{
+        height: 11px;
+        background: linear-gradient(to right, #0939e8, #edab42, #c41f1f);
+        opacity: 80%;
+    }
+    .teamTag{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 43px;
+    }
+    .teamUpdateBtn{
+        width: 30px;
+        border: none;
+        background: none;
+    }
+    .teamUpdateBtn:hover{
+        cursor: pointer;
+    }
+    .teamUpdateImg{
+        width: 25px;
+        height: 25px;
+        display: none;
+    }
+    .teamTitle{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .teamName{
+        color: white;
+        text-shadow: -2px 0px #656B70, 0px 2px #656B70, 2px 0px #656B70, 0px -2px #656B70;
+        font-size: 23px;
+        font-weight: bold;
+        padding-right: 10px;
+    }
+    .teamLeader{
+        color: #495057;
+        border-bottom: 1px solid #868e96;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .teamDeleteFrom{
+        width: 30px;
+    }
+    .teamDeleteBtn{
+        border: none;
+        background: none;
+        margin: 0 0 20px 5px;
+        display: none;
+    }
+    .teamDeleteBtn:hover{
+        cursor: pointer;
+    }
+    .teamDeleteImg{
+        width: 10px;
+        height: 10px;
+    }
+    .teamMemberRow{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        height: 105px;
+        padding: 10px;
+    }
+    .teamMemberRow > div{
+        flex: 0 0 calc(33.33% - 10px);
+        box-sizing: border-box;
+        text-align: center;
+    }
+    .teamMember{
+        padding: 10px;
+        text-align: center;
+        color: #656B70;
+    }
+    .teamCardBottom{
+        height: 11px;
+        background: linear-gradient(to right, #0939e8, #edab42, #c41f1f);
+        opacity: 10%;
+    }
 </style>
 <body>
     <div>
@@ -73,6 +205,42 @@
                 <div class="teamBtnDiv">
                     <a href="/team/list" class="teamBtn">팀</a>
                 </div>
+            </div>
+            <div class="teamStyle">전체 팀</div>
+            <div class="teamWrite">
+                <button class="teamWriteBtn">신규 팀 등록</button>
+            </div>
+        </div>
+        <div class="teamAllCard">
+            <div class="teamCard" th:each="team : ${list}">
+                <div class="teamCardTop"></div>
+                <div class="teamTag">
+                    <button class="teamUpdateBtn">
+                        <img src="/images/updateImage.svg" alt="Icon" class="teamUpdateImg">
+                    </button>
+                    <div class="teamTitle">
+                        <div>
+                            <span class="teamName" th:text="${team.teamName}"></span>
+                        </div>
+                        <div th:each="member : ${team.teamMembers}">
+                            <div th:if="${member.role == '팀장'}">
+                                <span class="teamLeader" th:text="${member.member_name}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <form th:action="@{/team/delete}" method="post" class="teamDeleteFrom">
+                        <input type="hidden" th:value="${team.teamId}" name="teamId" class="teamIdValue"/>
+                        <button type="submit" class="teamDeleteBtn">
+                            <img src="/images/delete.svg" alt="Icon" class="teamDeleteImg">
+                        </button>
+                    </form>
+                </div>
+                <div class="teamMemberRow">
+                    <div th:each="member : ${team.teamMembers}" th:if="${member.role == '팀원'}">
+                        <span class="teamMember" th:text="${member.member_name}"></span>
+                    </div>
+                </div>
+                <div class="teamCardBottom"></div>
             </div>
         </div>
       <p>전체 팀</p>
