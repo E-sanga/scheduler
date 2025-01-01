@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.text.ParseException;
@@ -48,14 +47,16 @@ public class EmployeeController {
 
         LocalDate now = LocalDate.now();
         String nowYear = String.valueOf(now.getYear());
-        String nowMonth = String.valueOf(now.getMonthValue());
+        String nowMonth = String.format("%02d", now.getMonthValue());
+        // 스케줄 날짜 저장을 위한 생성
+        StringBuilder sb = new StringBuilder();
         for (Employee employee : employees) {
             Integer employeeId = employee.getEmployee_id();
             List<Schedule> employeeSchedule = scheduleService.filterList(employeeId);
 
-            // 스케줄 날짜 저장을 위한 생성
-            StringBuilder sb = new StringBuilder();
             if (employeeSchedule != null && !employeeSchedule.isEmpty()) {
+                // StringBuilder 초기화
+                sb.setLength(0);
                 for (Schedule schedule : employeeSchedule) {
                     String scheduleDay = String.valueOf(schedule.getClosedDay());
                     String[] scheduleDayData = scheduleDay.split("-");
@@ -63,7 +64,6 @@ public class EmployeeController {
                     String year = scheduleDayData[0];
                     String month = scheduleDayData[1];
                     String day = scheduleDayData[2];
-
                     if (year.equals(nowYear) && month.equals(nowMonth)) {
                         if (!sb.isEmpty()) {
                             sb.append(",");

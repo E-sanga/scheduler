@@ -26,11 +26,20 @@ public class TeamController {
     @Autowired
     private TeamMemberService teamMemberService;
 
-    @GetMapping("/team/write")
-    public String teamWrite(Model model) {
+    @GetMapping("/team/list")
+    public String teamList(Model model) {
+        List<Team> teams = teamService.teamList();
+        for(Team team : teams){
+            List<TeamMember> members = team.getTeamMembers();
+            if(members != null) {
+                members.removeIf(member -> member.getTeam() == null);
+            }
+        }
+        model.addAttribute("list", teams);
 
         model.addAttribute("elist", employees());
-        return "teamwrite";
+
+        return "teamlist";
     }
 
     @PostMapping("/team/writepro")
@@ -73,19 +82,6 @@ public class TeamController {
         return "redirect:/team/list";
     }
 
-    @GetMapping("/team/list")
-    public String teamList(Model model) {
-        List<Team> teams = teamService.teamList();
-        for(Team team : teams){
-            List<TeamMember> members = team.getTeamMembers();
-            if(members != null) {
-                members.removeIf(member -> member.getTeam() == null);
-            }
-        }
-        model.addAttribute("list", teams);
-
-        return "teamlist";
-    }
 
     @PostMapping("/team/delete")
     public String teamDelete(Integer teamId) {

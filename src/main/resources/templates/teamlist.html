@@ -5,6 +5,141 @@
     <title>팀 목록</title>
 </head>
 <style>
+    /* 모달 시작 */
+    .writeModal{
+        position: absolute;
+        display: none;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+    .updateModal{
+        position: absolute;
+        display: none;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+    .modalBody{
+        position: absolute;
+        top: 50%;
+        width: 500px;
+        height: 600px;
+        padding: 20px;
+        text-align: center;
+        background-color: white;
+        box-shadow: 0 2px 3px 0 rgba(34,36,38,0.15);
+        transform: translateY(-50%);
+        z-index: 1001;
+    }
+    .layout{
+        width: 460px;
+        margin: 0 auto;
+    }
+    .layout input{
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .modalTeamTitle{
+        color: #495057;
+        font-size: 25px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .inputStyle{
+        height: 50px;
+        border: 1px solid #868e96;
+        border-radius: 10px;
+        color: #495057;
+        font-size: 14px;
+        margin-top: 25px;
+        text-align: center;
+    }
+    .leader{
+        width: 460px;
+        height: 50px;
+        border: 1px solid #868e96;
+        border-radius: 10px;
+        color: #495057;
+        font-size: 14px;
+        margin-top: 25px;
+        text-align: center;
+    }
+    .memberContainer{
+        height: 275px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .memberSelectBtn{
+        width: 460px;
+        height: 50px;
+        border: 1px solid #429eeb;
+        border-radius: 10px;
+        color: white;
+        background-color: #429eeb;
+        font-size: 14px;
+        margin-top: 25px;
+        text-align: center;
+    }
+    .memberSelectBtn:hover{
+        cursor: pointer;
+        background-color: #82c1f5;
+    }
+    .member-select{
+        width: 205px;
+        height: 50px;
+        border: 1px solid #868e96;
+        border-radius: 10px;
+        color: #495057;
+        font-size: 14px;
+        margin: 25px 5px 0 5px;
+        text-align: center;
+    }
+    .teamBtnGroup{
+        margin-top: 25px;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .writeBtn{
+        width: 100px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        background-color: #82c1f5;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .updateBtn{
+        width: 100px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        background-color: #82c1f5;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .cancelBtn{
+        margin-left: 10px;
+        width: 100px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        background-color: #f06e54;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    /* 모달 끝 */
     .headDiv {
         display: flex;
         justify-content: space-between;
@@ -121,6 +256,7 @@
         justify-content: space-between;
         align-items: center;
         height: 43px;
+        border-bottom: 1px dotted #adb5bd;
     }
     .teamUpdateBtn{
         width: 30px;
@@ -149,7 +285,6 @@
     }
     .teamLeader{
         color: #495057;
-        border-bottom: 1px solid #868e96;
         font-size: 20px;
         font-weight: bold;
     }
@@ -193,6 +328,52 @@
     }
 </style>
 <body>
+    <div class="writeModal">
+        <div class="modalBody">
+            <div class="layout">
+                <form action="writepro" method="post" onsubmit="return validateSelection()">
+                    <p class="modalTeamTitle">신규 팀 등록</p>
+                    <input type="text" name="teamName" class="inputStyle" maxlength="10" placeholder="팀 이름을 입력해 주세요." required>
+                    <select class="leader" id="leader" name="leader" onchange="updateOptions()">
+                        <option value="" disabled selected>팀장 선택</option>
+                        <option th:each="employee : ${elist}"
+                                th:value="|${employee.emname}| + '|' + |${employee.employee_id}|"
+                                th:text="${employee.emname}"></option>
+                    </select>
+                    <div id="memberContainer" class="memberContainer">
+                        <button type="button" onclick="addMemberSelect()" class="memberSelectBtn">팀원 추가</button>
+                    </div>
+                    <div class="teamBtnGroup">
+                        <button type="submit" class="writeBtn">완료</button>
+                        <button type="button" class="cancelBtn">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="updateModal">
+        <div class="modalBody">
+            <div class="layout">
+                <form action="update" method="post" onsubmit="return validateSelection()">
+                    <p class="modalTeamTitle">팀 정보 수정</p>
+                    <input type="text" name="teamName" class="inputStyle" maxlength="10" placeholder="팀 이름을 입력해 주세요." required>
+                    <select class="leader" name="leader" onchange="updateOptions()">
+                        <option value="" disabled selected>팀장 선택</option>
+                        <option th:each="employee : ${elist}"
+                                th:value="|${employee.emname}| + '|' + |${employee.employee_id}|"
+                                th:text="${employee.emname}"></option>
+                    </select>
+                    <div class="memberContainer">
+                        <button type="button" onclick="addMemberSelect()" class="memberSelectBtn">팀원 추가</button>
+                    </div>
+                    <div class="teamBtnGroup">
+                        <button type="submit" class="updateBtn">완료</button>
+                        <button type="button" class="cancelBtn">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div>
         <div class="headDiv">
             <div class="allaTagDiv">
@@ -225,6 +406,7 @@
                         <div th:each="member : ${team.teamMembers}">
                             <div th:if="${member.role == '팀장'}">
                                 <span class="teamLeader" th:text="${member.member_name}"></span>
+                                <span class="memberId" th:text="${member.memberId}" style="display: none"></span>
                             </div>
                         </div>
                     </div>
@@ -238,13 +420,12 @@
                 <div class="teamMemberRow">
                     <div th:each="member : ${team.teamMembers}" th:if="${member.role == '팀원'}">
                         <span class="teamMember" th:text="${member.member_name}"></span>
+                        <span class="memberId" th:text="${member.memberId}" style="display: none"></span>
                     </div>
                 </div>
                 <div class="teamCardBottom"></div>
             </div>
         </div>
-      <p>전체 팀</p>
-        <a href="write">신규 팀 등록</a>
         <div th:each="team : ${list}">
             <p th:text="${team.teamName}"></p>
             <p th:text="${team.teamId}"></p>
@@ -258,5 +439,113 @@
             <a th:href="@{/team/modify/{teamId}(teamId = ${team.teamId})}">수정</a>
         </div>
     </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 모달창 닫기를 위한 코드
+        document.querySelectorAll('.cancelBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+               const modal = e.target.closest('.modalBody').parentNode;
+               modal.style.display = "none";
+               document.body.style.overflow = "";
+               document.location.href = '/team/list';
+            });
+        });
+        // 팀 수정을 위한 선처리
+        const updateButtons = document.querySelectorAll('.teamUpdateBtn');
+        // 팀 수정 모달창을 열기 위한 코드
+        const updateModal = document.querySelector('.updateModal');
+
+        updateButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                updateModal.style.display = "flex";
+                document.body.style.overflow = "hidden";
+                const teamCard = button.closest('.teamCard');
+            });
+        });
+    });
+    function addMemberSelect() {
+        var container = document.getElementById("memberContainer");
+        var memberSelect = document.createElement("select");
+        var options = document.getElementById("leader").getElementsByTagName("option");
+
+        memberSelect.name = "members[]";
+        memberSelect.className = "member-select";
+
+        // 기본 옵션 추가
+        var defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.text = "팀원 선택";
+        memberSelect.appendChild(defaultOption);
+
+        // 직원 목록 옵션 추가
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].value && !options[i].disabled) {
+                var option = document.createElement("option");
+                option.value = options[i].value;
+                option.text = options[i].text;
+                memberSelect.appendChild(option);
+            }
+        }
+
+        container.appendChild(memberSelect);
+        updateOptions();
+    }
+    // 선택한 이름은 옵션에서 제거
+    function updateOptions(){
+        var leaderSelect = document.getElementById("leader");
+        var leaderValue = leaderSelect.value.split('|')[1];
+
+        var selectedMembers = [];
+        var memberSelects = document.getElementsByClassName("member-select")
+
+        // 팀원으로 선택되면 옵션에서 숨김
+        for (var i=0; i<memberSelects.length; i++){
+            var selectedValue = memberSelects[i].value.split('|')[1];
+            if(selectedValue){
+                selectedMembers.push(selectedValue);
+            }
+        }
+        // 팀장으로 선택되면 옵션에서 숨김
+        for (var i=0; i<memberSelects.length; i++) {
+            var options = memberSelects[i].getElementsByTagName('option');
+            for (var j = 0; j < options.length; j++) {
+                var optionValue = options[j].value.split('|')[1];
+                if(optionValue === leaderValue || selectedMembers.includes(optionValue)) {
+                    options[j].style.display = 'none';
+                } else {
+                    options[j].style.display = 'block';
+                }
+            }
+        }
+    }
+    // 팀 등록 모달창을 열기 위한 코드
+    const writeModal = document.querySelector('.writeModal');
+    const writeModalCloseOpen = document.querySelector('.teamWriteBtn');
+
+    writeModalCloseOpen.addEventListener("click", ()=>{
+       writeModal.style.display = "flex";
+       document.body.style.overflow = "hidden";
+    });
+
+    // 팀장 선택이 제대로 되었는지 확인하는 코드
+    function validateSelection() {
+        var selectElement = document.getElementById("leader");
+        var selectedValue = selectElement.options[selectElement.selectedIndex].value;
+        var memberSelect = document.querySelector(".member-select");
+
+        if (selectedValue === "") {
+            alert("팀장을 선택해 주세요.");
+            return false;
+        }
+
+        if (!memberSelect) {
+            alert("팀원을 추가해 주세요.");
+            return false;
+        }
+        return true;
+    }
+</script>
 </body>
 </html>
