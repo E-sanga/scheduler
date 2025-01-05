@@ -26,10 +26,12 @@ public class MemberController {
             TeamMember teamMember = teamMemberService.view(memberId);
             teamMember.setRole("팀원");
             teamMemberService.roleChange(teamMember);
+            return ResponseEntity.ok().body(Map.of("success", 1));
         } else {
             teamMemberService.deleteTeamMemberByMemberId(memberId);
+            return ResponseEntity.ok().body(Map.of("success", 2));
         }
-        return ResponseEntity.ok().body(Map.of("success", 1));
+
     }
 
     @PostMapping("/write")

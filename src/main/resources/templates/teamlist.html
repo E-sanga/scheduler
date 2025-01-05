@@ -63,6 +63,42 @@
         margin-top: 25px;
         text-align: center;
     }
+    .updateLeaderDiv{
+        display: flex;
+        justify-content: space-between;
+    }
+    .updateLeader{
+        width: 300px;
+        height: 50px;
+        border: 1px solid #868e96;
+        border-radius: 10px;
+        color: #495057;
+        background-color: #ced4da;
+        font-size: 14px;
+        margin-top: 25px;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .leaderChangeBtn{
+        width: 150px;
+        height: 50px;
+        border: 1px solid #429eeb;
+        border-radius: 10px;
+        color: white;
+        background-color: #429eeb;
+        font-size: 14px;
+        margin-top: 25px;
+        text-align: center;
+    }
+    .leaderChangeBtn:hover{
+        cursor: pointer;
+        background-color: #82c1f5;
+    }
+    .updateSelectLeaderDiv{
+        display: none;
+    }
     .leader{
         width: 460px;
         height: 50px;
@@ -73,10 +109,34 @@
         margin-top: 25px;
         text-align: center;
     }
+    .teamMemberList{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 120px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+    }
+    .deleteTeamMemberDiv{
+        width: 100px;
+        height: 25px;
+        color: #495057;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .noneMemberSpan{
+        color: #656B70;
+        font-size: 14px;
+    }
     .memberContainer{
         height: 275px;
         overflow-y: auto;
         overflow-x: hidden;
+    }
+    .memberUpdateContainer{
+        height: 125px;
     }
     .memberSelectBtn{
         width: 460px;
@@ -93,6 +153,35 @@
         cursor: pointer;
         background-color: #82c1f5;
     }
+    .memberAddBtn{
+        width: 460px;
+        height: 50px;
+        border: 1px solid #429eeb;
+        border-radius: 10px;
+        color: white;
+        background-color: #429eeb;
+        font-size: 14px;
+        margin-top: 25px;
+        text-align: center;
+    }
+    .memberAddBtn:hover{
+        cursor: pointer;
+        background-color: #82c1f5;
+    }
+    .memberAddDiv{
+        display: none;
+        justify-content: center;
+        margin-top: 12px;
+    }
+    .member{
+        width: 200px;
+        height: 50px;
+        border: 1px solid #868e96;
+        border-radius: 10px;
+        color: #495057;
+        font-size: 14px;
+        text-align: center;
+    }
     .member-select{
         width: 205px;
         height: 50px;
@@ -102,6 +191,20 @@
         font-size: 14px;
         margin: 25px 5px 0 5px;
         text-align: center;
+    }
+    .memberCrateBtn{
+        width: 100px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        background-color: #868e96;
+        color: white;
+        font-size: 16px;
+        margin-left: 5px;
+    }
+    .memberCrateBtn:hover{
+        cursor: pointer;
+        background-color: #ced4da;
     }
     .teamBtnGroup{
         margin-top: 25px;
@@ -234,7 +337,7 @@
     .teamCard{
         box-sizing: border-box;
         width: 260px;
-        height: 190px;
+        height: 215px;
         background-color: white;
         box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
         transition: all 0.3s cubic-bezier(.25,.8,.25,1);
@@ -308,17 +411,19 @@
         display: flex;
         flex-wrap: wrap;
         gap: 15px;
-        height: 105px;
+        height: 130px;
         padding: 10px;
     }
     .teamMemberRow > div{
         flex: 0 0 calc(33.33% - 10px);
+        height: 34px;
         box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         text-align: center;
     }
     .teamMember{
-        padding: 10px;
-        text-align: center;
         color: #656B70;
     }
     .teamCardBottom{
@@ -354,17 +459,33 @@
     <div class="updateModal">
         <div class="modalBody">
             <div class="layout">
-                <form action="update" method="post" onsubmit="return validateSelection()">
+                <form action="update" method="post">
                     <p class="modalTeamTitle">팀 정보 수정</p>
-                    <input type="text" name="teamName" class="inputStyle" maxlength="10" placeholder="팀 이름을 입력해 주세요." required>
-                    <select class="leader" name="leader" onchange="updateOptions()">
-                        <option value="" disabled selected>팀장 선택</option>
-                        <option th:each="employee : ${elist}"
-                                th:value="|${employee.emname}| + '|' + |${employee.employee_id}|"
-                                th:text="${employee.emname}"></option>
-                    </select>
-                    <div class="memberContainer">
-                        <button type="button" onclick="addMemberSelect()" class="memberSelectBtn">팀원 추가</button>
+                    <input type="hidden" id="updateTeamId" name="teamId">
+                    <input type="text" id="teamUpdateName" name="teamName" class="inputStyle" maxlength="10" placeholder="팀 이름을 입력해 주세요." required>
+                    <div class="updateLeaderDiv" id="updateLeaderDiv">
+                        <div class="updateLeader" id="updateLeader"></div>
+                        <button type="button" class="leaderChangeBtn" id="leaderChangeBtn">변경</button>
+                    </div>
+                    <div class="updateSelectLeaderDiv" id="updateSelectLeaderDiv">
+                        <select class="leader" id="updateSelectLeader" name="leader">
+                            <option value="" disabled selected>팀장 선택</option>
+                        </select>
+                    </div>
+                    <div class="teamMemberList" id="teamMemberList"></div>
+                    <div class="memberUpdateContainer">
+                        <button type="button" class="memberAddBtn" id="memberAddBtn">팀원 추가</button>
+                        <div class="memberAddDiv" id="memberAddDiv">
+                            <select class="member" id="member" name="member" onchange="updateOptions()">
+                                <option value="" disabled selected>팀원 선택</option>
+                                <option th:each="employee : ${elist}"
+                                        th:value="|${employee.emname}| + '|' + |${employee.employee_id}|"
+                                        th:text="${employee.emname}"></option>
+                            </select>
+                            <button type="button" class="memberCrateBtn" id="memberCrateBtn">추가</button>
+                            <button type="button" class="memberCrateBtn" id="memberCrateCancelBtn">취소</button>
+                        </div>
+
                     </div>
                     <div class="teamBtnGroup">
                         <button type="submit" class="updateBtn">완료</button>
@@ -406,7 +527,7 @@
                         <div th:each="member : ${team.teamMembers}">
                             <div th:if="${member.role == '팀장'}">
                                 <span class="teamLeader" th:text="${member.member_name}"></span>
-                                <span class="memberId" th:text="${member.memberId}" style="display: none"></span>
+                                <span class="leaderId" th:text="${member.memberId}" style="display: none"></span>
                             </div>
                         </div>
                     </div>
@@ -418,25 +539,13 @@
                     </form>
                 </div>
                 <div class="teamMemberRow">
-                    <div th:each="member : ${team.teamMembers}" th:if="${member.role == '팀원'}">
+                    <div th:each="member : ${team.teamMembers}" th:if="${member.role == '팀원'}" class="memberInfo">
                         <span class="teamMember" th:text="${member.member_name}"></span>
                         <span class="memberId" th:text="${member.memberId}" style="display: none"></span>
                     </div>
                 </div>
                 <div class="teamCardBottom"></div>
             </div>
-        </div>
-        <div th:each="team : ${list}">
-            <p th:text="${team.teamName}"></p>
-            <p th:text="${team.teamId}"></p>
-            <ul th:each="member : ${team.teamMembers}">
-                <li th:text="${member.member_name}"></li><span th:text="${member.role}"></span>
-            </ul>
-            <form th:action="@{/team/delete}" method="post">
-                <input type="hidden" th:value="${team.teamId}" name="teamId" />
-                <button type="submit">삭제</button>
-            </form>
-            <a th:href="@{/team/modify/{teamId}(teamId = ${team.teamId})}">수정</a>
         </div>
     </div>
 <script>
@@ -457,9 +566,222 @@
 
         updateButtons.forEach(button => {
             button.addEventListener('click', function () {
-                updateModal.style.display = "flex";
-                document.body.style.overflow = "hidden";
                 const teamCard = button.closest('.teamCard');
+                if (teamCard) {
+                    const teamNameValue = teamCard.querySelector('.teamName');
+                    const teamName = teamNameValue.textContent;
+                    const teamIdValue = teamCard.querySelector('.teamIdValue');
+                    const teamId = teamIdValue.value;
+                    const teamLeaderNameValue = teamCard.querySelector('.teamLeader');
+                    document.getElementById('teamUpdateName').value = teamName;
+                    document.getElementById('updateTeamId').value = teamId;
+                    // 팀장이 팀에 존재한다면 실행되는 코드
+                    if (teamLeaderNameValue){
+                        document.getElementById('updateLeader').textContent = teamLeaderNameValue.textContent;
+                        const leaderIdValue = teamCard.querySelector('.leaderId');
+                        const leaderId = leaderIdValue.textContent;
+                        const leaderChangeBtn = document.getElementById('leaderChangeBtn');
+                        leaderChangeBtn.setAttribute('data-mid', leaderId);
+                        leaderChangeBtn.setAttribute('data-mrole', '팀장');
+                    } else {
+                        const updateLeaderNone = document.getElementById('updateLeaderDiv');
+                        const updateSelectLeader = document.getElementById('updateSelectLeaderDiv');
+                        updateLeaderNone.style.display = 'none';
+                        updateSelectLeader.style.display = 'flex';
+                        // 팀장 선택을 위한 코드
+                        const memberInfos = teamCard.querySelector('.teamMemberRow');
+                        const memberInfo = memberInfos.getElementsByClassName('memberInfo');
+                        const leaderOption = document.getElementById('updateSelectLeader');
+                        for (const info of memberInfo) {
+                            const memberNameInfoValue = info.querySelector('.teamMember');
+                            const memberNameInfo = memberNameInfoValue.textContent;
+                            const memberIdInfoValue = info.querySelector('.memberId');
+                            const memberIdInfo = memberIdInfoValue.textContent;
+                            // 팀장 선택을 위한 옵션 만들기
+                            const option = document.createElement('option');
+                            option.value = memberIdInfo;
+                            option.textContent = memberNameInfo;
+                            leaderOption.appendChild(option);
+                        }
+                    }
+                    // 여기에 만들것은 팀원 목록
+                    const memberListInfos = teamCard.querySelector('.teamMemberRow');
+                    const memberListInfo = memberListInfos.getElementsByClassName('memberInfo');
+                    const membersInfo = document.getElementById('teamMemberList');
+                    // 중복 이벤트 방지를 위한 기존 내용 삭제
+                    //membersInfo.innerHTML = '';
+                    if (memberListInfo.length > 0) {
+                        for (const info of memberListInfo) {
+                            const memberNameInfoValue = info.querySelector('.teamMember');
+                            const memberNameInfo = memberNameInfoValue.textContent;
+                            const memberIdInfoValue = info.querySelector('.memberId');
+                            const memberIdInfo = memberIdInfoValue.textContent;
+                            // 팀원 삭제를 위한 팀원 나열
+                            const teamMembers = document.createElement('div');
+                            teamMembers.className = "deleteTeamMemberDiv";
+                            // span 태그 생성 후 팀원 이름 세팅
+                            const memberSpanTag = document.createElement('span');
+                            memberSpanTag.textContent = memberNameInfo;
+                            teamMembers.appendChild(memberSpanTag);
+                            // 삭제를 위한 버튼 생성
+                            const memberDeleteBtn = document.createElement('button');
+                            memberDeleteBtn.setAttribute('data-mid', memberIdInfo);
+                            memberDeleteBtn.type = "button";
+                            memberDeleteBtn.textContent = "삭제";
+                            teamMembers.appendChild(memberDeleteBtn);
+                            membersInfo.appendChild(teamMembers);
+                        }
+                    } else {
+                        const teamMembers = document.createElement('div');
+                        const noneMemberSpanTag = document.createElement('span');
+                        noneMemberSpanTag.textContent = "팀원이 존재하지 않습니다.";
+                        noneMemberSpanTag.className = "noneMemberSpan";
+                        teamMembers.appendChild(noneMemberSpanTag);
+                        membersInfo.appendChild(teamMembers);
+                    }
+                    // 팀원 추가를 위한 선처리
+                    const memberAddBtn = document.getElementById('memberAddBtn');
+                    const memberAddDiv = document.getElementById('memberAddDiv');
+                    memberAddBtn.addEventListener('click', function() {
+                        memberAddDiv.style.display = 'flex';
+                    });
+                    // 팀원 추가 취소 처리
+                    const memberCrateCancelBtn = document.getElementById('memberCrateCancelBtn');
+                    memberCrateCancelBtn.addEventListener('click', function () {
+                        memberAddDiv.style.display = 'none';
+                    });
+                    // 팀원 추가를 위한 코드
+                    const memberCrateBtn = document.getElementById('memberCrateBtn');
+                    // 완료 버튼 클릭 시 비동기 통신 및 memberAddDiv 숨기기
+                    memberCrateBtn.addEventListener('click', function() {
+                        const select = document.getElementById('member');
+                        const selectedOption = select.options[select.selectedIndex].value;
+                        const [memberName, employeeId] = selectedOption.split('|');
+                        // 멤버 추가 비동기 통신
+                        fetch('/member/write', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                memberName: memberName,
+                                employeeId: employeeId,
+                                teamId: teamId
+                            })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Success:', data);
+                                memberAddDiv.style.display = 'none';
+                                // 팀원 삭제를 위한 팀원 나열
+                                const teamMembers = document.createElement('div');
+                                teamMembers.className = "deleteTeamMemberDiv";
+                                // span 태그 생성 후 팀원 이름 세팅
+                                const memberSpanTag = document.createElement('span');
+                                memberSpanTag.textContent = memberName;
+                                teamMembers.appendChild(memberSpanTag);
+                                membersInfo.appendChild(teamMembers);
+                                // 선택된 select-option 요소 삭제
+                                select.options[select.selectedIndex].remove();
+
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                                alert('추가 실패!');
+                            });
+                    });
+                    // 팀장 변경과 팀원 삭제를 위한 코드
+                    const deleteMember = (mid, mrole) => {
+                        const mLeader = mrole ? 1 : 0;
+                        console.log(mLeader);
+                        const url = '/member/delete';
+                        const fetchOption = {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json' // 요청 헤더에 Content-Type을 추가
+                            },
+                            body: JSON.stringify({
+                                id: mid, // 서버에서 받을 값(name)
+                                role: mLeader
+                            }),
+                        }
+                        fetch(url, fetchOption)
+                            .then((response) => response.json())
+                            .then((result) => {
+
+                                if(result.success === 1) {
+                                    console.log(result);
+                                    const updateLeaderNone = document.getElementById('updateLeaderDiv');
+                                    const updateSelectLeader = document.getElementById('updateSelectLeaderDiv');
+                                    updateLeaderNone.style.display = 'none';
+                                    updateSelectLeader.style.display = 'flex';
+                                    // 팀장 선택을 위한 코드
+                                    const memberInfos = teamCard.querySelector('.teamMemberRow');
+                                    const memberInfo = memberInfos.getElementsByClassName('memberInfo');
+                                    const leaderOption = document.getElementById('updateSelectLeader');
+                                    for (const info of memberInfo) {
+                                        const memberNameInfoValue = info.querySelector('.teamMember');
+                                        const memberNameInfo = memberNameInfoValue.textContent;
+                                        const memberIdInfoValue = info.querySelector('.memberId');
+                                        const memberIdInfo = memberIdInfoValue.textContent;
+                                        // 팀장 선택을 위한 옵션 만들기
+                                        const option = document.createElement('option');
+                                        option.value = memberIdInfo;
+                                        option.textContent = memberNameInfo;
+                                        leaderOption.appendChild(option);
+                                    }
+                                    // 방금 삭제된 값을 재삽입
+                                    const option = document.createElement('option');
+                                    option.value = mid;
+                                    option.textContent = "되돌리기";
+                                    leaderOption.appendChild(option);
+                                    // 팀원이 된 팀장 팀원 리스트에 추가
+                                    // 팀원 삭제를 위한 팀원 나열
+                                    const teamMembers = document.createElement('div');
+                                    teamMembers.className = "deleteTeamMemberDiv";
+                                    // span 태그 생성 후 팀원 이름 세팅
+                                    const memberSpanTag = document.createElement('span');
+                                    memberSpanTag.textContent = (document.getElementById('updateLeader').textContent = teamLeaderNameValue.textContent);
+                                    teamMembers.appendChild(memberSpanTag);
+                                    // 삭제를 위한 버튼 생성
+                                    const memberDeleteBtn = document.createElement('button');
+                                    memberDeleteBtn.setAttribute('data-mid', mid);
+                                    memberDeleteBtn.type = "button";
+                                    memberDeleteBtn.textContent = "삭제";
+                                    teamMembers.appendChild(memberDeleteBtn);
+                                    membersInfo.appendChild(teamMembers);
+                                } else if(result.success === 2) {
+                                    console.log(result);
+                                    // 서버 요청 성공. DOM 요소 제거
+                                    document.querySelector(`[data-mid="${mid}"]`).closest('div').remove();
+                                } else {
+                                    alert('삭제 실패!');
+                                    return false;
+                                }
+
+                            }).catch((error) => {
+                            console.error('Error:', error);
+                            alert('삭제 실패!');
+                        });
+                    };
+
+                    const memberEl = document.querySelectorAll('[data-mid]');
+                    memberEl.forEach((item) => {
+                        item.addEventListener('click', (e)=>{
+                            const el = e.target;
+                            deleteMember(el.dataset.mid, el.dataset.mrole ?? null);
+                        });
+                    });
+                }
+                // 페이지 맨 위로 스크롤하고 스크롤을 막기 위한 코드
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                setTimeout(function (){
+                    updateModal.style.display = "flex";
+                    document.body.style.overflow = "hidden";
+                }, 400);
             });
         });
     });

@@ -55,4 +55,5 @@ public class TeamMemberService {
         Optional<TeamMember> optionalTeamMember = teamMemberRepository.findById(memberId);
         return optionalTeamMember.orElse(null); // 존재하지 않는 경우 null 반환
     }
+
 }
