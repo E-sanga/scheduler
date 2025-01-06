@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ScheduleService {
@@ -31,9 +32,10 @@ public class ScheduleService {
 
     @Async
     @Transactional
-    public void write(Schedule schedule){
-
-        scheduleRepository.save(schedule);
+    public CompletableFuture<Integer> write(Schedule schedule){
+        //scheduleRepository.save(schedule);
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+        return CompletableFuture.completedFuture(savedSchedule.getScheduleId());
     }
 
     @Async

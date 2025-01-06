@@ -213,10 +213,11 @@
     </div>
     <div class="teamSelect">
         <select id="teamSchedule" name="teamSchedule" class="teamSelectBox">
-            <option value="전체 팀">전체 팀</option>
-            <option th:each="entry : ${teamMemberMap}"
-                    th:value="${entry.key}"
-                    th:text="${entry.key}"></option>
+            <option value="" disabled selected>팀 선택</option>
+            <option value="전체">전체 팀</option>
+            <option th:each="team : ${teams}"
+                    th:value="${team.teamId}"
+                    th:text="${team.teamName}"></option>
         </select>
     </div>
 </div>
@@ -255,7 +256,7 @@
         const today = new Date();
         let year = today.getFullYear();
         let month = today.getMonth() + 1;
-
+        let leapMonth = year - 2020;
         // 달 이동 처리를 거쳤을 경우
         // 쿠키에서 특정 값을 가져오는 함수
         function getCookie(name) {
@@ -283,13 +284,13 @@
         const cookieYear = getCookie('year');
         if (cookieYear) {
             const parsedYear = parseInt(cookieYear, 10);
+            leapMonth = parsedYear - 2020;
             if (!isNaN(parsedYear)) {
                 year = parsedYear;
             } else {
                 console.error('Invalid month value in cookie:', parsedYear);
             }
         }
-
         scheduleYear.textContent = year;
         scheduleMonth.textContent = month + '월';
 
@@ -359,6 +360,7 @@
                         const hiddenData = document.createElement('input');
                         hiddenData.type = 'hidden';
                         hiddenData.value = `${year}-${month}-${j}`;
+                        hiddenData.name = 'employeeId';
                         hiddenData.setAttribute('data-employee-id', employeeIds[i - 1]);
 
                         // sList와 날짜, 직원 번호 대조 후 색상 변경
@@ -391,6 +393,7 @@
                         const hiddenData = document.createElement('input');
                         hiddenData.type = 'hidden';
                         hiddenData.value = `${year}-${month}-${j}`;
+                        hiddenData.name = 'employeeId';
                         hiddenData.setAttribute('data-employee-id', employeeIds[i - 1]);
 
                         // sList와 날짜, 직원 번호 대조 후 색상 변경
@@ -416,35 +419,70 @@
                     }
                 }
                 if (month === 2) { // month가 2월인 경우
-                    for (let j = 1; j <= 28; j++) {
-                        const closeDayBox = document.createElement('div');
-                        closeDayBox.className = 'closeDayBox';
+                    if (leapMonth % 4 === 0){
+                        for (let j = 1; j <= 29; j++) {
+                            const closeDayBox = document.createElement('div');
+                            closeDayBox.className = 'closeDayBox';
 
-                        const hiddenData = document.createElement('input');
-                        hiddenData.type = 'hidden';
-                        hiddenData.value = `${year}-${month}-${j}`;
-                        hiddenData.setAttribute('data-employee-id', employeeIds[i - 1]);
+                            const hiddenData = document.createElement('input');
+                            hiddenData.type = 'hidden';
+                            hiddenData.value = `${year}-${month}-${j}`;
+                            hiddenData.name = 'employeeId';
+                            hiddenData.setAttribute('data-employee-id', employeeIds[i - 1]);
 
-                        // sList와 날짜, 직원 번호 대조 후 색상 변경
-                        const dateString = `${year}-${String(month).padStart(2, '0')}-${String(j).padStart(2, '0')}`;
-                        const employeeIdData = String(employeeIds[i - 1]);
-                        sList.forEach(item => {
-                            const itemDateString = new Date(item.closedDay).toISOString().split('T')[0];
-                            const itemImployeeId = String(item.employeeId);
-                            const itemScheduleId = String(item.scheduleId);
-                            if (itemImployeeId === employeeIdData && itemDateString === dateString) {
-                                closeDayBox.style.backgroundColor = '#FFEB00';
-                                closeDayBox.textContent = '휴무';
-                                const hiddenId = document.createElement('input');
-                                hiddenId.type = 'hidden';
-                                hiddenId.name = 'scheduleId';
-                                hiddenId.setAttribute('data-schedule-id', itemScheduleId);
-                                closeDayBox.appendChild(hiddenId);
-                            }
-                        });
+                            // sList와 날짜, 직원 번호 대조 후 색상 변경
+                            const dateString = `${year}-${String(month).padStart(2, '0')}-${String(j).padStart(2, '0')}`;
+                            const employeeIdData = String(employeeIds[i - 1]);
+                            sList.forEach(item => {
+                                const itemDateString = new Date(item.closedDay).toISOString().split('T')[0];
+                                const itemImployeeId = String(item.employeeId);
+                                const itemScheduleId = String(item.scheduleId);
+                                if (itemImployeeId === employeeIdData && itemDateString === dateString) {
+                                    closeDayBox.style.backgroundColor = '#FFEB00';
+                                    closeDayBox.textContent = '휴무';
+                                    const hiddenId = document.createElement('input');
+                                    hiddenId.type = 'hidden';
+                                    hiddenId.name = 'scheduleId';
+                                    hiddenId.setAttribute('data-schedule-id', itemScheduleId);
+                                    closeDayBox.appendChild(hiddenId);
+                                }
+                            });
 
-                        scheduleDayBox.appendChild(closeDayBox);
-                        closeDayBox.appendChild(hiddenData);
+                            scheduleDayBox.appendChild(closeDayBox);
+                            closeDayBox.appendChild(hiddenData);
+                        }
+                    } else {
+                        for (let j = 1; j <= 28; j++) {
+                            const closeDayBox = document.createElement('div');
+                            closeDayBox.className = 'closeDayBox';
+
+                            const hiddenData = document.createElement('input');
+                            hiddenData.type = 'hidden';
+                            hiddenData.value = `${year}-${month}-${j}`;
+                            hiddenData.name = 'employeeId';
+                            hiddenData.setAttribute('data-employee-id', employeeIds[i - 1]);
+
+                            // sList와 날짜, 직원 번호 대조 후 색상 변경
+                            const dateString = `${year}-${String(month).padStart(2, '0')}-${String(j).padStart(2, '0')}`;
+                            const employeeIdData = String(employeeIds[i - 1]);
+                            sList.forEach(item => {
+                                const itemDateString = new Date(item.closedDay).toISOString().split('T')[0];
+                                const itemImployeeId = String(item.employeeId);
+                                const itemScheduleId = String(item.scheduleId);
+                                if (itemImployeeId === employeeIdData && itemDateString === dateString) {
+                                    closeDayBox.style.backgroundColor = '#FFEB00';
+                                    closeDayBox.textContent = '휴무';
+                                    const hiddenId = document.createElement('input');
+                                    hiddenId.type = 'hidden';
+                                    hiddenId.name = 'scheduleId';
+                                    hiddenId.setAttribute('data-schedule-id', itemScheduleId);
+                                    closeDayBox.appendChild(hiddenId);
+                                }
+                            });
+
+                            scheduleDayBox.appendChild(closeDayBox);
+                            closeDayBox.appendChild(hiddenData);
+                        }
                     }
                 }
             }
@@ -455,11 +493,14 @@
             closeDayBox.addEventListener('click', closed);
         });
         function closed() {
-            const cellElement = event.target.querySelector('input[type="hidden"]');
+            const closeDayBox = event.target;
+            const cellElement = closeDayBox.querySelector('input[name="employeeId"]');
             const cellEmployeeId = cellElement.dataset.employeeId;
             const cellElementValue = cellElement.value;
+            console.log(cellElementValue);
+            console.log(cellEmployeeId);
 
-            const deleteElement = event.target.querySelector('input[name="scheduleId"]');
+            const deleteElement = closeDayBox.querySelector('input[name="scheduleId"]');
             if (!deleteElement){
                 // 스케줄 추가 비동기 통신
                 fetch('/close/write', {
@@ -475,16 +516,26 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Success:', data);
+                        // 휴무 구분을 위한 추가
+                        closeDayBox.style.backgroundColor = '#FFEB00';
+                        closeDayBox.textContent = '휴무';
+                        const createInput = document.createElement('input');
+                        createInput.type = 'hidden';
+                        createInput.value = cellElementValue;
+                        createInput.name = 'employeeId';
+                        createInput.setAttribute('data-employee-id', cellEmployeeId);
+                        closeDayBox.appendChild(createInput);
+                        const createHiddenId = document.createElement('input');
+                        createHiddenId.type = 'hidden';
+                        createHiddenId.name = 'scheduleId';
+                        console.log(data.success.scheduleId);
+                        createHiddenId.setAttribute('data-schedule-id', data.success.scheduleId);
+                        closeDayBox.appendChild(createHiddenId);
                     })
                     .catch((error) => {
                         console.error('Error:', error);
                         alert('추가 실패!');
                     });
-
-                // 휴무 구분을 위한 추가
-                event.target.style.backgroundColor = '#FFEB00';
-                event.target.textContent = '휴무';
-
             } else {
                 const deleteScheduleId = deleteElement.dataset.scheduleId;
                 // 스케줄 삭제 비동기 통신
@@ -500,19 +551,25 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Success:', data);
+                        // 휴무 삭제 구분을 위한 변경
+                        closeDayBox.style.backgroundColor = '';
+                        closeDayBox.textContent = '';
+                        const deleteInput = document.createElement('input');
+                        deleteInput.type = 'hidden';
+                        deleteInput.value = cellElementValue;
+                        deleteInput.name = 'employeeId';
+                        deleteInput.setAttribute('data-employee-id', cellEmployeeId);
+                        closeDayBox.appendChild(deleteInput);
                     })
                     .catch((error) => {
                         console.error('Error:', error);
                         alert('추가 실패!');
                     });
-
-                // 휴무 삭제 구분을 위한 변경
-                event.target.style.backgroundColor = '';
-                event.target.textContent = '';
             }
         }
 
-        if ([1, 3, 5, 7, 8, 10, 12].includes(month)) { // month가 12월인 경우
+
+        if ([1, 3, 5, 7, 8, 10, 12].includes(month)) { // month가 1, 3, 5, 7, 8, 10, 12월인 경우
             for (let i = 1; i <= 31; i++) {
                 const dayBox = document.createElement('div');
                 dayBox.className = 'dayBox';
@@ -520,7 +577,7 @@
                 dayListBox.appendChild(dayBox);
             }
         }
-        if ([4, 6, 9, 11].includes(month)) { // month가 11월인 경우
+        if ([4, 6, 9, 11].includes(month)) { // month가 4, 6, 9, 11월인 경우
             for (let i = 1; i <= 30; i++) {
                 const dayBox = document.createElement('div');
                 dayBox.className = 'dayBox';
@@ -528,23 +585,39 @@
                 dayListBox.appendChild(dayBox);
             }
         }
-        if (month === 2) { // month가 11월인 경우
-            for (let i = 1; i <= 28; i++) {
-                const dayBox = document.createElement('div');
-                dayBox.className = 'dayBox';
-                dayBox.textContent = i;
-                dayListBox.appendChild(dayBox);
+        if (month === 2) { // month가 2월인 경우
+            if (leapMonth % 4 === 0){
+                for (let i = 1; i <= 29; i++) {
+                    const dayBox = document.createElement('div');
+                    dayBox.className = 'dayBox';
+                    dayBox.textContent = i;
+                    dayListBox.appendChild(dayBox);
+                }
+            } else {
+                for (let i = 1; i <= 28; i++) {
+                    const dayBox = document.createElement('div');
+                    dayBox.className = 'dayBox';
+                    dayBox.textContent = i;
+                    dayListBox.appendChild(dayBox);
+                }
             }
         }
 
         // 팀별로 보기를 위한 처리
         const teamScheduleSelect = document.getElementById('teamSchedule');
+        // select box에 선택된 값을 세팅
+        const savedValue = localStorage.getItem('selectedTeamValue');
+        if (savedValue) {
+            teamScheduleSelect.value = savedValue;
+        }
         teamScheduleSelect.addEventListener('change', function(event) {
             const selectedValue = event.target.value;
-            if (selectedValue === '전체 팀') {
+            // 선택된 값을 저장
+            localStorage.setItem('selectedTeamValue', selectedValue);
+            if (selectedValue === '전체') {
                 document.location.href = '/schedule/list';
             } else {
-                console.log(selectedValue);
+                document.location.href = '/schedule/list?teamValue=' + selectedValue;
             }
         });
 

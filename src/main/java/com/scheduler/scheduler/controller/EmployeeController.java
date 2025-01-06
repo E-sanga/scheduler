@@ -2,8 +2,10 @@ package com.scheduler.scheduler.controller;
 
 import com.scheduler.scheduler.entity.Employee;
 import com.scheduler.scheduler.entity.Schedule;
+import com.scheduler.scheduler.entity.TeamMember;
 import com.scheduler.scheduler.service.EmployeeService;
 import com.scheduler.scheduler.service.ScheduleService;
+import com.scheduler.scheduler.service.TeamMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +26,9 @@ public class EmployeeController {
 
     @Autowired
     private ScheduleService scheduleService;
+
+    @Autowired
+    private TeamMemberService teamMemberService;
 
     @PostMapping("/employee/writepro")
     public String employeeWritePro(Employee employee, String joindate) {
@@ -101,6 +106,11 @@ public class EmployeeController {
             e.printStackTrace();
         }
         employeeService.update(employee);
+        TeamMember teamMember = teamMemberService.filterView(employee_id);
+        if (teamMember != null) {
+            teamMember.setMember_name(employee.getEmname());
+            teamMemberService.update(teamMember);
+        }
 
         return "redirect:/employee/list";
     }

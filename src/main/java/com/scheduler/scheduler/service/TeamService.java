@@ -4,7 +4,6 @@ import com.scheduler.scheduler.entity.Team;
 import com.scheduler.scheduler.entity.TeamMember;
 import com.scheduler.scheduler.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class TeamService {
         return team;
     }
 
-    public Team update(Team team) {
-        return teamRepository.save(team);
+    public void update(Team team) {
+        teamRepository.save(team);
     }
 }

@@ -56,4 +56,9 @@ public class TeamMemberService {
         return optionalTeamMember.orElse(null); // 존재하지 않는 경우 null 반환
     }
 
+    // 직원 이름 변경시 팀원 이름 변경
+    public void update(TeamMember teamMember) {
+        teamMemberRepository.save(teamMember);
+    }
+
 }

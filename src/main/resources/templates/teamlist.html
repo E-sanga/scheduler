@@ -633,6 +633,7 @@
                         }
                     } else {
                         const teamMembers = document.createElement('div');
+                        teamMembers.id = "nonMemberDiv";
                         const noneMemberSpanTag = document.createElement('span');
                         noneMemberSpanTag.textContent = "팀원이 존재하지 않습니다.";
                         noneMemberSpanTag.className = "noneMemberSpan";
@@ -672,6 +673,11 @@
                             .then(response => response.json())
                             .then(data => {
                                 console.log('Success:', data);
+                                // 팀원이 아무도 없었을때 보여지던 div를 삭제 처리
+                                const nonMemberDiv = document.getElementById('nonMemberDiv');
+                                if (nonMemberDiv){
+                                    nonMemberDiv.remove();
+                                }
                                 memberAddDiv.style.display = 'none';
                                 // 팀원 삭제를 위한 팀원 나열
                                 const teamMembers = document.createElement('div');
@@ -683,7 +689,6 @@
                                 membersInfo.appendChild(teamMembers);
                                 // 선택된 select-option 요소 삭제
                                 select.options[select.selectedIndex].remove();
-
                             })
                             .catch((error) => {
                                 console.error('Error:', error);
