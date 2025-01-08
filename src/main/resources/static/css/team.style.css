@@ -1,0 +1,489 @@
+/* 모달 시작 */
+.writeModal {
+    position: absolute;
+    display: none;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.updateModal {
+    position: absolute;
+    display: none;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modalBody {
+    position: absolute;
+    top: 50%;
+    width: 500px;
+    height: 600px;
+    padding: 20px;
+    text-align: center;
+    background-color: white;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+    transform: translateY(-50%);
+    z-index: 1001;
+}
+
+.layout {
+    width: 460px;
+    margin: 0 auto;
+}
+
+.layout input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modalTeamTitle {
+    color: #495057;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.inputStyle {
+    height: 50px;
+    border: 1px solid #868e96;
+    border-radius: 10px;
+    color: #495057;
+    font-size: 14px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.updateLeaderDiv {
+    display: flex;
+    justify-content: space-between;
+}
+
+.updateLeader {
+    width: 300px;
+    height: 50px;
+    border: 1px solid #868e96;
+    border-radius: 10px;
+    color: #495057;
+    background-color: #ced4da;
+    font-size: 14px;
+    margin-top: 25px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.leaderChangeBtn {
+    width: 150px;
+    height: 50px;
+    border: 1px solid #429eeb;
+    border-radius: 10px;
+    color: white;
+    background-color: #429eeb;
+    font-size: 14px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.leaderChangeBtn:hover {
+    cursor: pointer;
+    background-color: #82c1f5;
+}
+
+.updateSelectLeaderDiv {
+    display: none;
+}
+
+.leader {
+    width: 460px;
+    height: 50px;
+    border: 1px solid #868e96;
+    border-radius: 10px;
+    color: #495057;
+    font-size: 14px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.teamMemberList {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 120px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.deleteTeamMemberDiv {
+    width: 100px;
+    height: 25px;
+    color: #495057;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.noneMemberSpan {
+    color: #656B70;
+    font-size: 14px;
+}
+
+.memberContainer {
+    height: 275px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.memberUpdateContainer {
+    height: 125px;
+}
+
+.memberSelectBtn {
+    width: 460px;
+    height: 50px;
+    border: 1px solid #429eeb;
+    border-radius: 10px;
+    color: white;
+    background-color: #429eeb;
+    font-size: 14px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.memberSelectBtn:hover {
+    cursor: pointer;
+    background-color: #82c1f5;
+}
+
+.memberAddBtn {
+    width: 460px;
+    height: 50px;
+    border: 1px solid #429eeb;
+    border-radius: 10px;
+    color: white;
+    background-color: #429eeb;
+    font-size: 14px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.memberAddBtn:hover {
+    cursor: pointer;
+    background-color: #82c1f5;
+}
+
+.memberAddDiv {
+    display: none;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.member {
+    width: 200px;
+    height: 50px;
+    border: 1px solid #868e96;
+    border-radius: 10px;
+    color: #495057;
+    font-size: 14px;
+    text-align: center;
+}
+
+.member-select {
+    width: 205px;
+    height: 50px;
+    border: 1px solid #868e96;
+    border-radius: 10px;
+    color: #495057;
+    font-size: 14px;
+    margin: 25px 5px 0 5px;
+    text-align: center;
+}
+
+.memberCrateBtn {
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #868e96;
+    color: white;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+.memberCrateBtn:hover {
+    cursor: pointer;
+    background-color: #ced4da;
+}
+
+.teamBtnGroup {
+    margin-top: 25px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.writeBtn {
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #82c1f5;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.updateBtn {
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #82c1f5;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.cancelBtn {
+    margin-left: 10px;
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #f06e54;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* 모달 끝 */
+.headDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 90px;
+}
+
+.allaTagDiv {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.teamBtnDiv {
+    height: 60px;
+    width: 60px;
+    border: solid 1px #868e96;
+    border-radius: 50%;
+    background: #adb5bd;
+    position: relative;
+    margin: 5px;
+}
+
+.teamBtn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-decoration: none;
+    font-size: 10px;
+    color: white;
+}
+
+.aTagDiv {
+    height: 60px;
+    width: 60px;
+    border: solid 1px #adb5bd;
+    border-radius: 50%;
+    background: white;
+    position: relative;
+    margin: 5px;
+}
+
+.aTagBtn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-decoration: none;
+    font-size: 10px;
+    color: #868e96;
+}
+
+.teamBtn:hover {
+    font-weight: bold;
+}
+
+.aTagBtn:hover {
+    color: black;
+    font-weight: bold;
+}
+
+.teamStyle {
+    color: #495057;
+    font-size: 30px;
+    font-weight: bolder;
+    margin: 0;
+}
+
+.teamWrite {
+    width: 214px;
+    height: 65px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.teamWriteBtn {
+    height: 40px;
+    width: 120px;
+    border: 1px solid #868e96;
+    border-radius: 10px;
+    font-size: 13px;
+    text-align: center;
+    margin-right: 10px;
+    text-decoration-line: none;
+    color: #495057;
+    background-color: white;
+}
+
+.teamWriteBtn:hover {
+    color: white;
+    background-color: #868e96;
+    cursor: pointer;
+}
+
+/* 리스트 시작 */
+.teamAllCard {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    border-top: 1px solid #adb5bd;
+    padding-top: 20px;
+}
+
+.teamCard {
+    box-sizing: border-box;
+    width: 260px;
+    height: 215px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+    margin: 20px;
+}
+
+.teamCard:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.teamCard:hover .teamUpdateImg, .teamCard:hover .teamDeleteBtn {
+    display: inline-block;
+}
+
+.teamCardTop {
+    height: 11px;
+    background: linear-gradient(to right, #0939e8, #edab42, #c41f1f);
+    opacity: 80%;
+}
+
+.teamTag {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 43px;
+    border-bottom: 1px dotted #adb5bd;
+}
+
+.teamUpdateBtn {
+    width: 30px;
+    border: none;
+    background: none;
+}
+
+.teamUpdateBtn:hover {
+    cursor: pointer;
+}
+
+.teamUpdateImg {
+    width: 25px;
+    height: 25px;
+    display: none;
+}
+
+.teamTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.teamName {
+    color: white;
+    text-shadow: -2px 0px #656B70, 0px 2px #656B70, 2px 0px #656B70, 0px -2px #656B70;
+    font-size: 23px;
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+.teamLeader {
+    color: #495057;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.teamDeleteFrom {
+    width: 30px;
+}
+
+.teamDeleteBtn {
+    border: none;
+    background: none;
+    margin: 0 0 20px 5px;
+    display: none;
+}
+
+.teamDeleteBtn:hover {
+    cursor: pointer;
+}
+
+.teamDeleteImg {
+    width: 10px;
+    height: 10px;
+}
+
+.teamMemberRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    height: 130px;
+    padding: 10px;
+}
+
+.teamMemberRow > div {
+    flex: 0 0 calc(33.33% - 10px);
+    height: 34px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.teamMember {
+    color: #656B70;
+}
+
+.teamCardBottom {
+    height: 11px;
+    background: linear-gradient(to right, #0939e8, #edab42, #c41f1f);
+    opacity: 10%;
+}

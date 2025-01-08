@@ -124,10 +124,12 @@ public class EmployeeController {
                             sb.append(",");
                         }
                         sb.append(day);
+                        String scheduleList = sb.toString();
+                        employee.setCloseDay(scheduleList);
+                    } else {
+                        employee.setCloseDay("없음");
                     }
                 }
-                String scheduleList = sb.toString();
-                employee.setCloseDay(scheduleList);
             } else {
                 employee.setCloseDay("없음");
             }
