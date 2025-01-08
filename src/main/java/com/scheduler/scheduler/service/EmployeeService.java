@@ -4,6 +4,7 @@ import com.scheduler.scheduler.entity.Employee;
 import com.scheduler.scheduler.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,5 +40,17 @@ public class EmployeeService {
             employeeRepository.save(existingEmployee);
         }
 
+    }
+
+    // 검색 기능 구현
+    @Transactional(readOnly = true)
+    public List<Employee> search(String search){
+        return employeeRepository.findAll((root, query, criteriaBuilder) -> {
+           String LikePatten = "%"+search+"%";
+           return criteriaBuilder.or(
+                   criteriaBuilder.like(root.get("emname"), LikePatten),
+                   criteriaBuilder.like(root.get("classify"), LikePatten)
+           );
+        });
     }
 }

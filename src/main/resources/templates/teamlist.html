@@ -305,6 +305,10 @@
     }
     .teamWrite{
         width: 214px;
+        height: 65px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
     }
     .teamWriteBtn{
         height: 40px;
@@ -312,11 +316,8 @@
         border: 1px solid #868e96;
         border-radius: 10px;
         font-size: 13px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         text-align: center;
-        margin: 25px 0 0 86px;
+        margin-right: 10px;
         text-decoration-line: none;
         color: #495057;
         background-color: white;
@@ -788,6 +789,18 @@
                     document.body.style.overflow = "hidden";
                 }, 400);
             });
+        });
+        // 삭제 확인을 위한 코드
+        const deleteButtons = document.querySelectorAll('.teamDeleteBtn');
+        deleteButtons.forEach(function (button) {
+           button.addEventListener('click', function (event) {
+               event.preventDefault();
+               if (confirm("정말 삭제하시겠습니까?")) {
+                   button.closest('form').submit();
+               } else {
+                   console.log('삭제가 취소되었습니다.');
+               }
+           });
         });
     });
     function addMemberSelect() {

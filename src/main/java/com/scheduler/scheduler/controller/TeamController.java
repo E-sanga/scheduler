@@ -90,45 +90,6 @@ public class TeamController {
         return "redirect:/team/list";
     }
 
-//    @GetMapping("/team/modify/{team_id}")
-//    public String teamModify(@PathVariable("team_id") Integer teamId, Model model) {
-//
-//        model.addAttribute("team", teamService.updateView(teamId));
-//
-//        // 팀장이 존재 유무 확인을 위한 선처리
-//        List<TeamMember> members = teamMemberService.memberList(teamId);
-//        boolean hasLeader = members.stream().anyMatch(member -> "팀장".equals(member.getRole()));
-//        model.addAttribute("members", members);
-//        model.addAttribute("hasLeader", hasLeader);
-//
-//        // 팀원 추가를 위한 직원 리스트
-//        model.addAttribute("elist", employees());
-//        return "teammodify";
-//    }
-//
-//    @PostMapping("/team/update/{teamId}")
-//    public String teamModifyPro(@PathVariable("teamId") Integer teamId, Team team, @RequestParam("leader") String leader) {
-//        if(leader != null && !leader.isEmpty()){
-//            // 팀원을 팀장으로 변경
-//            String[] parts = leader.split("\\|");
-//            String selectedMname = parts[0];
-//            Integer selectedMemberId = Integer.valueOf(parts[1]);
-//            Integer selectedTeamId = Integer.valueOf(parts[2]);
-//            Integer selectedEmployeeId = Integer.valueOf(parts[3]);
-//            TeamMember teamMember = new TeamMember();
-//            teamMember.setMember_name(selectedMname);
-//            teamMember.setMemberId(selectedMemberId);
-//            teamMember.setTeamId(selectedTeamId);
-//            teamMember.setEmployeeId(selectedEmployeeId);
-//            teamMember.setRole("팀장");
-//            teamMemberService.roleChange(teamMember);
-//            teamService.update(team);
-//        }
-//
-//        teamService.update(team);
-//        return "redirect:/team/list";
-//    }
-
     @PostMapping("/team/update")
     public String teamUpdate(Integer teamId, Team team, @RequestParam(value = "leader", defaultValue = "") String leader) {
         // 팀원을 팀장으로 변경

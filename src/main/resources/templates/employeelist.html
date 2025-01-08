@@ -28,6 +28,17 @@
         background-color: rgba(0,0,0,0.5);
         z-index: 1000;
     }
+    .searchModal{
+        position: absolute;
+        display: none;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
     .modalBody{
         position: absolute;
         top: 50%;
@@ -100,6 +111,16 @@
         cursor: pointer;
     }
     .modalUpdateBtn{
+        width: 100px;
+        height: 50px;
+        border: none;
+        border-radius: 10px;
+        background-color: #82c1f5;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .modalSearchBtn{
         width: 100px;
         height: 50px;
         border: none;
@@ -185,6 +206,26 @@
     }
     .employeeWrite{
         width: 214px;
+        height: 65px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+    }
+    .employeeSearch{
+        width: 50px;
+        height: 40px;
+        margin-right: 10px;
+        border: none;
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+    .employeeSearch:hover{
+        cursor: pointer;
+    }
+    .employeeSearchImg{
+        width: 25px;
     }
     .employeeWriteBtn{
         height: 40px;
@@ -192,11 +233,8 @@
         border: 1px solid #868e96;
         border-radius: 10px;
         font-size: 13px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        margin-right: 10px;
         text-align: center;
-        margin: 25px 0 0 86px;
         text-decoration-line: none;
         color: #495057;
         background-color: white;
@@ -364,6 +402,18 @@
             </div>
         </div>
     </div>
+    <div class="searchModal" id="searchModal">
+        <div class="modalBody" style="height: 245px">
+            <div class="layout">
+                <p class="employeeTitle">검색</p>
+                <input type="text" id="search" name="search" class="inputStyle" maxlength="10" placeholder="검색어를 입력해 주세요." required>
+                <div class="employeeBtnGroup">
+                    <button type="button" class="modalSearchBtn" id="modalSearchBtn">완료</button>
+                    <button type="button" class="cancelBtn">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div>
         <div class="headDiv">
             <div class="allaTagDiv">
@@ -379,6 +429,9 @@
             </div>
             <div class="employeeStyle">전체 직원</div>
             <div class="employeeWrite">
+                <button class="employeeSearch">
+                    <img src="/images/search.svg" alt="Icon" class="employeeSearchImg">
+                </button>
                 <button class="employeeWriteBtn">신규 직원 등록</button>
             </div>
         </div>
@@ -497,6 +550,18 @@
                }, 400);
            });
         });
+        // 삭제 확인을 위한 코드
+        const deleteButtons = document.querySelectorAll('.employeeDeleteBtn');
+        deleteButtons.forEach(function (button) {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                if (confirm("정말 삭제하시겠습니까?")) {
+                    button.closest('form').submit();
+                } else {
+                    console.log('삭제가 취소되었습니다.');
+                }
+            });
+        });
     });
     // 직원 등록 모달창을 열기 위한 코드
     const writeModal = document.querySelector('.writeModal');
@@ -525,6 +590,24 @@
         document.getElementById('selectedButtonValue').value = value;
         document.getElementById('selectedButtonValueTwo').value = value;
     }
+    // 직원 검색 모달창을 열기 위한 코드
+    const searchModal = document.querySelector('.searchModal');
+    const searchModalCloseOpen = document.querySelector('.employeeSearch');
+
+    searchModalCloseOpen.addEventListener("click", ()=>{
+        searchModal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    });
+    // 검색 처리를 위한 코드
+    const modalSearchBtn = document.getElementById('modalSearchBtn');
+    modalSearchBtn.addEventListener("click", ()=>{
+        const searchModalValue = document.getElementById('searchModal');
+        const searchInput = searchModalValue.querySelector('input[name="search"]')
+        const searchValue = searchInput.value;
+        if (searchValue){
+            document.location.href = '/employee/list?search=' + searchValue;
+        }
+    });
 </script>
 </body>
 </html>
