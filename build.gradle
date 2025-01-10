@@ -42,3 +42,10 @@ compileJava {
 	options.compilerArgs << '-parameters'
 }
 
+bootJar {
+	enabled = true
+}
+
+jar {
+	enabled = false
+}

@@ -9,7 +9,7 @@
     <div class="writeModal">
         <div class="modalBody">
             <div class="layout">
-                <form action="/employee/writepro" method="post">
+                <form action="writepro" method="post">
                     <p class="employeeTitle">신규 직원 등록</p>
                     <div class="classifyBtnGroup">
                         <button type="button" onclick="selectButton(this, '배송기사')" class="selected">배송기사</button>
@@ -92,7 +92,7 @@
                                 <img src="/images/updateImage.svg" alt="Icon" class="employeeUpdateImg">
                             </button>
                             <span th:text="${employee.classify}" class="classifyStyle"></span>
-                            <form th:action="@{/employee/delete}" method="post" class="employeeDeleteFrom">
+                            <form th:action="@{delete}" method="post" class="employeeDeleteFrom">
                                 <input type="hidden" th:value="${employee.employee_id}" name="employee_id" class="employeeIdValue"/>
                                 <button type="submit" class="employeeDeleteBtn">
                                     <img src="/images/delete.svg" alt="Icon" class="employeeDeleteImg">
