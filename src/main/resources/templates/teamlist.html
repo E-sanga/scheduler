@@ -104,7 +104,7 @@
                             </div>
                         </div>
                     </div>
-                    <form th:action="@{/team/delete}" method="post" class="teamDeleteFrom">
+                    <form th:action="@{delete}" method="post" class="teamDeleteFrom">
                         <input type="hidden" th:value="${team.teamId}" name="teamId" class="teamIdValue"/>
                         <button type="submit" class="teamDeleteBtn">
                             <img src="/images/delete.svg" alt="Icon" class="teamDeleteImg">
